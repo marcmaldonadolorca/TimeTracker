@@ -1,5 +1,6 @@
 package core;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ public abstract class TrackerNode {
   protected Duration timeSpent;
   protected List<String> tagList;
   private final static Logger LOGGER = LoggerFactory.getLogger("core.TrackerNode");
+  //private int nodeId;
 
   public TrackerNode() {
     this.timeSpent = Duration.ZERO;
@@ -51,4 +53,13 @@ public abstract class TrackerNode {
   public abstract void updateTimes(LocalDateTime startDateTime, LocalDateTime finalDateTime);
 
   public abstract JSONObject getJsonObject();
+
+  public abstract TrackerNode findActivityById(int n);
+
+  public abstract JSONObject toJson(int i);
+
+  //TODO
+  /*public int getNodeId() {
+    return this.nodeId;
+  }*/
 }
