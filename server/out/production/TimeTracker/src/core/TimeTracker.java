@@ -24,6 +24,7 @@ public class TimeTracker extends Thread {
   private List<TrackerNode> trackerNodes;
   private TimeCounter clockCounter;
   private TrackerNode root;
+  private int activityId; //TODO
   private final int period;
   private final static Logger LOGGER = LoggerFactory.getLogger("core.TimeTracker");
 
@@ -32,9 +33,11 @@ public class TimeTracker extends Thread {
    */
   public TimeTracker(int period) {
     this.trackerNodes = new ArrayList<>();
+    this.activityId = 0;
     this.root = createNewNode("root", null, true);
     this.period = period;
     initClock();
+
     LOGGER.info("TimeTracker creat.");
   }
 
@@ -47,13 +50,30 @@ public class TimeTracker extends Thread {
     for (TrackerNode trackerNodes : trackerNodes) {
       if (trackerNodes.getNodeName().equals(nodeName)) {
         foundNode = trackerNodes;
+        break;
       }
     }
     return foundNode;
   }
 
-  public void createNewTreeFromJson(JSONArray objectsArray) {
+  /*private TrackerNode findActivityById(int n) {
+    TrackerNode foundNode = null;
+    for (TrackerNode trackerNodes : trackerNodes) {
+      if (trackerNodes.getNodeId().equals(n)) {
+        foundNode = trackerNodes;
+        break;
+      }
+    }
+    return foundNode;
+  }*/
+
+
+  //TODO
+  public void createNewTreeFromJson(JSONArray objectsArray, int biggestIdPlusOne) {
+  //public void createNewTreeFromJson(JSONArray objectsArray) {
     this.trackerNodes.clear();
+    //TODO
+    this.activityId = 0;
     this.root = createNewNode("root", null, true);//root reconstruction(no saved in the tree saving process)
 
     for (int i = 0; i < objectsArray.length(); i++) {
@@ -62,8 +82,13 @@ public class TimeTracker extends Thread {
       String parentName = arrayObject.getString("parentName");
       boolean isProject = arrayObject.getString("type").equals("project");
       TrackerNode parentNode = getTrackerNodeByName(parentName);
-      //TrackerNode newNode = createNewNode(nodeName, (Project) parentNode, isProject);
+      //TODO
+      this.activityId = arrayObject.getInt("nodeId");
       TrackerNode newNode = createNewNode(nodeName, (Project) parentNode, isProject);
+      JSONArray arrayTags = arrayObject.getJSONArray("tags");
+      for(int j=0;j<arrayTags.length();j++){
+        newNode.setTag(arrayTags.getString(j));
+      }
 
       //Se ejecuta si el nodo es una Task y además tiene intervalos.
       if (!isProject && arrayObject.getString("childs").equals("exist")) {
@@ -71,6 +96,9 @@ public class TimeTracker extends Thread {
         ((Task)newNode).setChildsFromJSON(arrayIntervals, this.period);
       }
     }
+    //TODO
+    this.activityId = biggestIdPlusOne;
+
     LOGGER.info("Load end successfully");
   }
 
@@ -78,10 +106,16 @@ public class TimeTracker extends Thread {
     TrackerNode newNode;
 
     if (isProjectType) {
-      newNode = new Project(nodeName, parentNode);
+      //TODO
+      newNode = new Project(nodeName, parentNode, this.activityId);
+      //newNode = new Project(nodeName, parentNode);
     } else {
-      newNode = new Task(nodeName, parentNode);
+      //TODO
+      newNode = new Task(nodeName, parentNode, this.activityId);
+      //newNode = new Task(nodeName, parentNode);
     }
+    //TODO
+    this.activityId += 1;
     this.trackerNodes.add(newNode);
 
     //Si el nodo tratado no es el nodo root, se llama a la función addChild() para añadir el nodo que se está creando
@@ -99,7 +133,11 @@ public class TimeTracker extends Thread {
    */
   private void startCounting(TrackerNode node) {
     if (checkIfNodeIsTask(node) && !checkIfTaskIsRunning(node)) {
-      Interval interval = ((Task) node).startInterval(this.period);
+      //TODO
+      Interval interval = ((Task) node).startInterval(this.period, this.activityId);
+      //Interval interval = ((Task) node).startInterval(this.period);
+      //TODO
+      this.activityId += 1;
       clockCounter.addObserver(interval);
       LOGGER.info("Observer afegit");
     }
@@ -139,7 +177,7 @@ public class TimeTracker extends Thread {
   /*
    * Este test (A) ejecuta la creación del árbol de nodos.
    */
-  private void testA() {
+  public void testA() {
     LOGGER.info("Initializing TEST A");
     //LOGGER.info("%46s %22s %12s%n", "initial date", "final date", "duration");
     LOGGER.info("Start test");
@@ -224,7 +262,9 @@ public class TimeTracker extends Thread {
 
     LOGGER.info("Saving data to testB.json file");
     DataManager dataManager = new DataManager("testB.json");
-    dataManager.fromJsonToFile(this.trackerNodes);
+    //TODO
+    dataManager.fromJsonToFile(this.trackerNodes, this.activityId);
+    //dataManager.fromJsonToFile(this.trackerNodes);
   }
 
   /*
@@ -389,7 +429,9 @@ public class TimeTracker extends Thread {
     // Se comprueba que el fichero se carga correctamente comparándolo con el árbol generado anterior
     LOGGER.info("Saving data to testC.json file");
     DataManager dataManager = new DataManager("testC.json");
-    dataManager.fromJsonToFile(this.trackerNodes);
+    //TODO
+    dataManager.fromJsonToFile(this.trackerNodes, this.activityId);
+    //dataManager.fromJsonToFile(this.trackerNodes);
   }
 
   private void testLoading(String jsonTestFile, boolean compare){
@@ -528,11 +570,11 @@ public class TimeTracker extends Thread {
    */
   public static void main(String[] arg) {
     TimeTracker timeTrackerAB = new TimeTracker(2);
-    //timeTrackerAB.testA();
+    //timeTrackerAB.testA();timeTrackerAB.testSearchByTag("python");
     //timeTrackerAB.testB();
     timeTrackerAB.testLoading("testB.json", false);//true si queremos comparar el árbol original y el cargado con JSON
 
-    timeTrackerAB.testSearchByTag("python");
+    //timeTrackerAB.testSearchByTag("python");
 
     //TimeTracker timeTrackerC = new TimeTracker(2);
     //timeTrackerC.testC();

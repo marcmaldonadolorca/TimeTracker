@@ -17,54 +17,54 @@
 
     <!-- Para mostrar únicamente los logs del milestone 1, establecer el tag 'level' de SearchByTagVisitor y
     TotalTimeVisitor a 'error'. Para el resto, establecer el tag 'level' a 'debug'.-->
-    <root level="debug">
+    <root level="error">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE" />
     </root>
 
-    <logger name="core.TimeTracker" level="debug" additivity="false">
+    <logger name="core.TimeTracker" level="error" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="core.TimeCounter" level="debug" additivity="false">
+    <logger name="core.TimeCounter" level="error" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="core.TrackerNode" level="debug" additivity="false">
+    <logger name="core.TrackerNode" level="error" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="core.Project" level="debug" additivity="false">
+    <logger name="core.Project" level="error" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="core.Task" level="debug" additivity="false">
+    <logger name="core.Task" level="error" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="core.Interval" level="debug" additivity="false">
+    <logger name="core.Interval" level="error" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="core.DataManager" level="debug" additivity="false">
+    <logger name="core.DataManager" level="error" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>
 
     <!-- Para mostrar únicamente los logs del milestone 2, establecer el tag 'level' de SearchByTagVisitor y
     TotalTimeVisitor a 'debug'. Para el resto, establecer el tag 'level' a 'error'.-->
-    <logger name="visitor.SearchByTagVisitor" level="debug" additivity="false">
+    <logger name="visitor.SearchByTagVisitor" level="error" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="visitor.TotalTimeVisitor" level="debug" additivity="false">
+    <logger name="visitor.TotalTimeVisitor" level="error" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>

@@ -28,14 +28,14 @@ public class Task extends TrackerNode {
   }
 
   //TODO
-  //public Task(String nodeName, Project parentNode, int activityId) {
-  public Task(String nodeName, Project parentNode) {
+  public Task(String nodeName, Project parentNode, int activityId) {
+  //public Task(String nodeName, Project parentNode) {
     this.nodeName = nodeName;
     this.parentNode = parentNode;
     this.taskIntervals = new ArrayList<>();
     this.taskIsRunning = false;
     //TODO
-    //this.nodeId = activityId;
+    this.nodeId = activityId;
     LOGGER.debug("Task " + this.nodeName + " creada.");
 
     assert invariant();
@@ -112,8 +112,8 @@ public class Task extends TrackerNode {
    * Crea un nuevo Interval y lo añade a la lista de intervalos de la tarea (Task)
    */
   //TODO
-  //public Interval startInterval(int period, int activityId) {
-  public Interval startInterval(int period) {
+  public Interval startInterval(int period, int activityId) {
+  //public Interval startInterval(int period) {
     assert invariant();
     //pre
     assert (period >=0);
@@ -129,8 +129,8 @@ public class Task extends TrackerNode {
 
     setTimeStatus(true);
     //TODO
-    //Interval interval = new Interval(this, period, activityId);
-    Interval interval = new Interval(this,period);
+    Interval interval = new Interval(this, period, activityId);
+    //Interval interval = new Interval(this,period);
     this.taskIntervals.add(interval);
 
     //post
@@ -253,7 +253,12 @@ public class Task extends TrackerNode {
     jsonObject.put("name",this.nodeName);
     jsonObject.put("parentName", this.parentNode.getNodeName());
     //TODO
-    //jsonObject.put("nodeId", this.getNodeId());
+    jsonObject.put("nodeId", this.getNodeId());
+    JSONArray tags = new JSONArray();
+    for(String tag: this.tagList) {
+      tags.put(tag);
+    }
+    jsonObject.put("tags",tags);
 
     //En caso de que la tarea (Task) contenga intervalos, se almacenarán en una lista de tipo JSONArray dentro del
     //objeto JSONObject asociado a la tarea.
@@ -314,7 +319,7 @@ public class Task extends TrackerNode {
       String finalTime = arrayObject.getString("finalTime");
       long duration = arrayObject.getLong("duration");
       //TODO
-      //int intervalId = arrayObject.getInt("intervalId");
+      int intervalId = arrayObject.getInt("nodeId");
 
       //Convierte los datos obtenidos de String al tipo esecífico de cada atributo
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -324,8 +329,8 @@ public class Task extends TrackerNode {
 
       //Crea un nuevo intervalo añadiéndolo a la tarea padre (this)
       //TODO
-      //Interval interval = new Interval(this, period, intervalId);
-      Interval interval = new Interval(this, period);
+      Interval interval = new Interval(this, period, intervalId);
+      //Interval interval = new Interval(this, period);
       this.taskIntervals.add(interval);
 
       //Asigna los tiempos obtenidos del JSONObject al nuevo intervalo asignado a la tarea (Task)

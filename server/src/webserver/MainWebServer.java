@@ -18,6 +18,6 @@ public class MainWebServer {
 
     // start your clock (no cal, s'inicialitza al constructor del TimeTracker
 
-    new WebServer(root.getTrackerNodes().get(0));
+    new WebServer(root/*AKA timetracker*/, root.getTrackerNodes().get(0));
   }
 }

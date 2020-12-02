@@ -1,5 +1,6 @@
 package webserver;
 
+import core.TimeTracker;
 import core.TrackerNode;
 import core.Task;
 import java.io.BufferedReader;
@@ -16,12 +17,13 @@ import java.util.StringTokenizer;
 
 public class WebServer {
   private static final int PORT = 8080; // port to listen to
-
+  private TimeTracker currentTimeTracker;
   private TrackerNode currentActivity;
   private final TrackerNode root;
 
-  public WebServer(TrackerNode root) {
+  public WebServer(TimeTracker timeTracker, TrackerNode root) {
     this.root = root;
+    this.currentTimeTracker = timeTracker;
     System.out.println(root);
     currentActivity = root;
     try {
@@ -40,6 +42,10 @@ public class WebServer {
 
   private TrackerNode findActivityById(int id) {
     return root.findActivityById(id);
+  }
+
+  private int adquirePresentActivityId() {
+    return this.currentTimeTracker.adquirePresentActivityId();
   }
 
   private class SocketThread extends Thread {
@@ -124,7 +130,8 @@ public class WebServer {
           TrackerNode activity = findActivityById(id);
           assert (activity!=null);
           Task task = (Task) activity;
-          task.startInterval(2);
+          int activityId =  adquirePresentActivityId();
+          task.startInterval(2,activityId);
           //task.start();
           body = "{}";
           break;

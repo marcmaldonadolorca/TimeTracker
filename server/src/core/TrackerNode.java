@@ -22,7 +22,7 @@ public abstract class TrackerNode {
   protected Duration timeSpent;
   protected List<String> tagList;
   private final static Logger LOGGER = LoggerFactory.getLogger("core.TrackerNode");
-  //private int nodeId;
+  protected int nodeId;
 
   public TrackerNode() {
     this.timeSpent = Duration.ZERO;
@@ -59,7 +59,7 @@ public abstract class TrackerNode {
   public abstract JSONObject toJson(int i);
 
   //TODO
-  /*public int getNodeId() {
+  public int getNodeId() {
     return this.nodeId;
-  }*/
+  }
 }

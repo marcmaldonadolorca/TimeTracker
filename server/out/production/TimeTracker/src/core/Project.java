@@ -1,5 +1,6 @@
 package core;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +28,14 @@ public class Project extends TrackerNode {
     return (hasName) && (isRoot || hasParent);
   }
 
-
-  public Project(String nodeName, Project parentNode) {
+  //TODO
+  public Project(String nodeName, Project parentNode, int activityId) {
+  //public Project(String nodeName, Project parentNode) {
     this.nodeName = nodeName;
     this.parentNode = parentNode;
     this.childNodes = new ArrayList<>();
+    //TODO
+    this.nodeId = activityId;
     LOGGER.debug("Projecte " + this.nodeName + " creat.");
 
     assert invariant();
@@ -167,7 +171,13 @@ public class Project extends TrackerNode {
     jsonObject.put("type", "project");
     jsonObject.put("name", this.nodeName);
     jsonObject.put("parentName", this.parentNode.getNodeName());
-
+    //TODO
+    jsonObject.put("nodeId", this.getNodeId());
+    JSONArray tags = new JSONArray();
+    for(String tag: this.tagList) {
+      tags.put(tag);
+    }
+    jsonObject.put("tags",tags);
     //post
     assert nodeNamePre.equals(this.nodeName);
     assert parentNodePre == this.parentNode;
@@ -182,5 +192,36 @@ public class Project extends TrackerNode {
     assert invariant();
 
     return jsonObject;
+  }
+
+  public TrackerNode findActivityById(int n) {
+    TrackerNode foundNode = null;
+    for (TrackerNode childNode : childNodes) {
+      if (childNode.getNodeId() == n) {
+        foundNode = childNode;
+        break;
+      } else if (childNode instanceof Project) {
+        ((Project) childNode).findActivityById(n);
+      }
+    }
+    return foundNode;
+  }
+
+  public JSONObject toJson(int i) {
+    JSONObject json = new JSONObject();
+    JSONObject parent = this.getJsonObject();
+    JSONArray childs = new JSONArray();
+
+    if (i > 0) {
+      for (TrackerNode child : this.childNodes) {
+        childs.put(child.toJson(i-1));
+      }
+    }
+
+    json.put("parent", parent);
+    json.put("childs", childs);
+
+
+    return json;
   }
 }

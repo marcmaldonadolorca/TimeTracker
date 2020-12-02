@@ -22,15 +22,16 @@ public class Interval implements Observer {
   private Duration timeSpent;
   private final int period;
   private final static Logger LOGGER = LoggerFactory.getLogger("core.Interval");
-  //private int nodeId;
+  private int nodeId;
 
-  //public Interval(Task parent, int period, int activityId) {
-  public Interval(Task parent, int period) {
+  //TODO
+  public Interval(Task parent, int period, int activityId) {
+  //public Interval(Task parent, int period) {
     this.parentTask = parent;
     this.period = period;
     this.timeSpent = Duration.ZERO;
     //TODO
-    //this.nodeId = activityId;
+    this.nodeId = activityId;
     LOGGER.debug("Interval creat.");
   }
 
@@ -81,7 +82,7 @@ public class Interval implements Observer {
     jsonInterval.put("duration",this.timeSpent.getSeconds());
     jsonInterval.put("parentName", this.parentTask.getNodeName());
     //TODO
-    //jsonInterval.put("nodeId", this.getNodeId());
+    jsonInterval.put("nodeId", this.getNodeId());
 
     return jsonInterval;
   }
@@ -96,9 +97,8 @@ public class Interval implements Observer {
   }
 
   //TODO
-  /*
-  * public int getNodeId() {
-  *   return this.nodeId();
-  * }
-  */
+  public int getNodeId() {
+    return this.nodeId;
+  }
+
 }

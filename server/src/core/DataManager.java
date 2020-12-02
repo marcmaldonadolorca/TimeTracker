@@ -43,8 +43,8 @@ public class DataManager {
    * Obtiene todos los datos del árbol almacenados en un objeto JSONObject y los almacena en el fichero .txt
    */
   //TODO
-  //public void fromJsonToFile(List<TrackerNode> trackerNodes, int biggestIdPlusOne) {
-  public void fromJsonToFile(List<TrackerNode> trackerNodes) {
+  public void fromJsonToFile(List<TrackerNode> trackerNodes, int biggestIdPlusOne) {
+  //public void fromJsonToFile(List<TrackerNode> trackerNodes) {
     JSONArray jsonTree = new JSONArray();
 
     //Se inicia en la segunda posición porque no es necesario almacenar el root.
@@ -56,7 +56,7 @@ public class DataManager {
     JSONObject dataSaved = new JSONObject();
     dataSaved.put("data", jsonTree);
     //TODO
-    //dataSaved.put("biggestIdPlusOne", biggestIdPlusOne);
+    dataSaved.put("biggestIdPlusOne", biggestIdPlusOne);
 
     try {
       FileWriter fileWriter = new FileWriter(this.storageFile, false);
@@ -85,11 +85,11 @@ public class DataManager {
     JSONObject object = new JSONObject(tokener);
     JSONArray objectsArray = new JSONArray(object.get("data").toString());
     //TODO
-    //int biggestIdPlusOne = object.get("biggestIdPlusOne");
+    int biggestIdPlusOne = object.getInt("biggestIdPlusOne");
 
     //TODO
-    //tracker.createNewTreeFromJson(objectsArray, biggestIdPlusOne);
-    tracker.createNewTreeFromJson(objectsArray);
+    tracker.createNewTreeFromJson(objectsArray, biggestIdPlusOne);
+    //tracker.createNewTreeFromJson(objectsArray);
     LOGGER.info("Se ha cargado correctamente el JSON desde un fichero.");
   }
 }

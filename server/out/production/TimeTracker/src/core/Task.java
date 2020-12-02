@@ -27,13 +27,15 @@ public class Task extends TrackerNode {
     return (hasName && hasParent);
   }
 
-
-  public Task(String nodeName, Project parentNode) {
+  //TODO
+  public Task(String nodeName, Project parentNode, int activityId) {
+  //public Task(String nodeName, Project parentNode) {
     this.nodeName = nodeName;
     this.parentNode = parentNode;
     this.taskIntervals = new ArrayList<>();
     this.taskIsRunning = false;
-
+    //TODO
+    this.nodeId = activityId;
     LOGGER.debug("Task " + this.nodeName + " creada.");
 
     assert invariant();
@@ -109,7 +111,9 @@ public class Task extends TrackerNode {
   /*
    * Crea un nuevo Interval y lo añade a la lista de intervalos de la tarea (Task)
    */
-  public Interval startInterval(int period) {
+  //TODO
+  public Interval startInterval(int period, int activityId) {
+  //public Interval startInterval(int period) {
     assert invariant();
     //pre
     assert (period >=0);
@@ -124,7 +128,9 @@ public class Task extends TrackerNode {
     List<String> tagListPre = new ArrayList<>(this.tagList);
 
     setTimeStatus(true);
-    Interval interval = new Interval(this,period);
+    //TODO
+    Interval interval = new Interval(this, period, activityId);
+    //Interval interval = new Interval(this,period);
     this.taskIntervals.add(interval);
 
     //post
@@ -246,6 +252,13 @@ public class Task extends TrackerNode {
     jsonObject.put("type","task");
     jsonObject.put("name",this.nodeName);
     jsonObject.put("parentName", this.parentNode.getNodeName());
+    //TODO
+    jsonObject.put("nodeId", this.getNodeId());
+    JSONArray tags = new JSONArray();
+    for(String tag: this.tagList) {
+      tags.put(tag);
+    }
+    jsonObject.put("tags",tags);
 
     //En caso de que la tarea (Task) contenga intervalos, se almacenarán en una lista de tipo JSONArray dentro del
     //objeto JSONObject asociado a la tarea.
@@ -278,6 +291,11 @@ public class Task extends TrackerNode {
     return jsonObject;
   }
 
+  @Override
+  public TrackerNode findActivityById(int n) {
+    return null;
+  }
+
   /*
    * Obtiene los datos de cada intervalo de la lista almacenada en el JSONArray y crea los objetos Interval
    * asociados a estos datos, asignánolos a las tarea correspondiente.
@@ -285,8 +303,8 @@ public class Task extends TrackerNode {
   public void setChildsFromJSON(JSONArray arrayIntervals, int period){
     assert invariant();
     //pre
-    assert (arrayIntervals != null): "JSONArray vació.";
-    assert (period >= 0): "Periodo invàlido.";
+    assert (arrayIntervals != null): "JSONArray vacío.";
+    assert (period >= 0): "Periodo inválido.";
 
     String nodeNamePre = this.nodeName;
     Project parentNodePre = this.parentNode;
@@ -300,6 +318,8 @@ public class Task extends TrackerNode {
       String startTime = arrayObject.getString("startTime");
       String finalTime = arrayObject.getString("finalTime");
       long duration = arrayObject.getLong("duration");
+      //TODO
+      int intervalId = arrayObject.getInt("nodeId");
 
       //Convierte los datos obtenidos de String al tipo esecífico de cada atributo
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -308,7 +328,9 @@ public class Task extends TrackerNode {
       Duration timeSpent = Duration.ofSeconds(duration,0);
 
       //Crea un nuevo intervalo añadiéndolo a la tarea padre (this)
-      Interval interval = new Interval(this, period);
+      //TODO
+      Interval interval = new Interval(this, period, intervalId);
+      //Interval interval = new Interval(this, period);
       this.taskIntervals.add(interval);
 
       //Asigna los tiempos obtenidos del JSONObject al nuevo intervalo asignado a la tarea (Task)
@@ -323,5 +345,16 @@ public class Task extends TrackerNode {
     assert tagListPre.equals(this.tagList);
 
     assert invariant();
+  }
+
+  public JSONObject toJson(int i) {
+    JSONObject json = new JSONObject();
+    JSONObject parent = this.getJsonObject();
+    JSONArray childs = new JSONArray();
+
+    json.put("parent", parent);
+    json.put("childs", childs);
+
+    return json;
   }
 }
