@@ -1,0 +1,160 @@
+@startuml
+title Diagrama de classes: core.TimeTracker
+
+class Observable{
+}
+class Observer{
+}
+
+class core.TimeTracker {
+    - root: TrackerNode
+    - period: int
+
+    + TimeTracker(int period)
+    + getTrackerNodes(): List<TrackerNode>
+    + setTrackerNodes(trackerNodes: List<TrackerNode>): void
+    + getTrackerNodeByName(nodeName: String): TrackerNode
+    + createNewTreeFromJson(objectsArray: JSONArray): void
+    + createNewNode(nodeName: String, parentNode: Project, isProjectType: boolean): TrackerNode
+    + startCounting(node: TrackerNode): void
+    + checkIfNodeIsTask(node: TrackerNode): boolean
+    + checkIfTaskIsRunning(node: TrackerNode): boolean
+    + stopCounting(node: TrackerNode): void
+    + addChild(parentNode: Project, childNode: TrackerNode): void
+    + initClock() :void
+}
+
+class core.TimeCounter {
+
+    - date: LocalDateTime
+    - timer: Timer
+    - uniqueInstance: TimeCounter
+
+    + TimeCounter()
+    + getInstance(): TimeCounter
+}
+
+class core.DataManager {
+
+    - storageFile: File
+    - fileName: String
+
+    + DataManager(fileName: String)
+    + fromJsonToFile(trackerNodes: List<TrackerNode>): void
+    + fromFileToJson(tracker: TimeTracker): void
+}
+
+class core.TrackerNode <<abstract>> {
+    - nodeName: String
+    - parentNode: Project
+    - startDateTime: LocalDateTime
+    - finalDateTime: LocalDateTime
+    - timeSpent: Duration
+    - tagList: List<String>
+
+    + TrackerNode()
+    + getNodeName(): String
+    + getParentNode(): Project
+    + getStartDateTime(): LocalDateTime
+    + getFinalDateTime(): LocalDateTime
+    + getTimeSpent(): Duration
+    + getTagList(): List<String>
+    + setStartDateTime(startDateTime: LocalDateTime): void
+    + setFinalDateTime(finalDateTime: LocalDateTime): void
+    + setDuration(Duration timeSpent: Duration): void
+    + setTag(tag: String): void
+    + {abstract} updateTimes(startDateTime: LocalDateTime, finalDateTime: LocalDateTime): void
+    + {abstract} getJsonObject(): JSONObject
+    + {abstract} accept(visitor: Visitor): void
+}
+
+class core.Project {
+
+    + Project(nodeName: String, parentNode: Project)
+    + getChildNodes(): List<TrackerNode>
+    + setChildNodes(childNodes: List<TrackerNode>): void
+    + setChild(TrackerNode childNode: TrackerNode): void
+    + updateTimes(startDateTime: LocalDateTime, finalDateTime: LocalDateTime): void
+    + getJsonObject(): JSONObject
+    + accept(visitor: Visitor): void
+}
+
+class core.Task {
+    - taskIsRunning: Boolean
+
+    + Task(String nodeName: String, Project parentNode: Project)
+    + getTaskIntervals(): List<Interval>
+    + getStatus(): boolean
+    + setTaskIntervals(taskIntervals: List<Interval>): void
+    + setTimeStatus(timeStatus): void
+    + startInterval(period: int) : Interval
+    + stopInterval(): Interval
+    + updateTimes(startDateTime: LocalDateTime, finalDateTime: LocalDateTime): void
+    + getJsonObject(): JSONObject
+    + setChildsFromJSON(arrayIntervals: JSONArray, period: int): void
+    + accept(visitor: Visitor): void
+}
+
+class core.Interval {
+    - startDateTime: LocalDateTime
+    - finalDateTime: LocalDateTime
+    - timeSpent: Duration
+    - period: int
+
+    + Interval(Task parent, int period)
+    + getParentTask(): TrackerNode
+    + getStartDateTime(): LocalDateTime
+    + getFinalDateTime(): LocalDateTime
+    + getTimeSpent(): Duration
+    + setParentTask(parent: Task): void
+    + setStartDateTime(startDateTime: LocalDateTime): void
+    + setFinalDateTime(finalDateTime: LocalDateTime): void
+    + setTimeSpent(timeSpent: Duration): void
+    + update(o: Observable, arg: Object): void
+    + getJsonobject(): JSONObject
+    + setIntervalTimes(startDateTime: LocalDateTime, finalDateTime: LocalDateTime, timeSpent: Duration): void
+    + accept(visitor: Visitor): void
+}
+core.TimeCounter ..|> Observable
+core.Interval --|> Observer
+
+core.TimeTracker -- core.TimeCounter
+core.TimeTracker --> core.DataManager
+core.TimeTracker "1" *--> "0..*" core.TrackerNode
+core.Project "0..1" o--> "0..*" core.TrackerNode
+core.TrackerNode <|-- core.Project
+core.TrackerNode <|-- core.Task
+core.Task "1" *--> "0..*" core.Interval
+
+class visitor.NodeVisitor <<abstract>>{
+    + {abstract} visitProject(project: Project): void
+    + {abstract} visitTask(task: Task): void
+    + {abstract} visitInterval(interval: Interval): void
+}
+
+class visitor.SearchByTagVisitor{
+   -tagToSearch: String
+   -nodesWithTag: List<TrackerNode>
+
+   + visitProject(project: Project): void
+   + visitTask(task: Task): void
+   + visitInterval(interval: Interval): void
+}
+
+class visitor.TotalTimeVisitor{
+   - startDateTime: LocalDateTime
+   - finalDateTime: LocalDateTime
+   - totalTime: Duration
+
+   + visitProject(project: Project): void
+   + visitTask(task: Task): void
+   + visitInterval(interval: Interval): void
+}
+
+
+core.TimeTracker -- visitor.NodeVisitor
+visitor.NodeVisitor <|-- visitor.SearchByTagVisitor
+visitor.NodeVisitor <|-- visitor.TotalTimeVisitor
+
+
+@enduml

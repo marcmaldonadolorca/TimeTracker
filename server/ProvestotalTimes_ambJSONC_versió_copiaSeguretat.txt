@@ -1,0 +1,29 @@
+    LocalDateTime startDateTime= LocalDateTime.of(2020,10,27,17,24,06);
+    LocalDateTime finalDateTime= LocalDateTime.of(2020,10,27,17,25,46);
+    timeTrackerC.testTotalTime("T2",startDateTime, finalDateTime);//haurà de mostrar 80seg 1:20
+
+    LocalDateTime startDateTime= LocalDateTime.of(2020,10,27,17,24,06);
+    LocalDateTime finalDateTime= LocalDateTime.of(2020,10,27,17,25,46);
+    timeTrackerC.testTotalTime("P0",startDateTime, finalDateTime);//haurà de mostrar 170seg 2:50
+
+    LocalDateTime startDateTime= LocalDateTime.of(2020,10,27,17,23,46);
+    LocalDateTime finalDateTime= LocalDateTime.of(2020,10,27,17,25,46);
+    timeTrackerC.testTotalTime("P0",startDateTime, finalDateTime);//haurà de mostrar 190seg 3:10
+
+    LocalDateTime startDateTime= LocalDateTime.of(2020,10,27,17,23,46);
+    LocalDateTime finalDateTime= LocalDateTime.of(2020,10,27,17,25,56);
+    timeTrackerC.testTotalTime("T4",startDateTime, finalDateTime);//haurà de mostrar 90seg 1:30
+
+    LocalDateTime startDateTime= LocalDateTime.of(2020,10,27,17,23,46);
+    LocalDateTime finalDateTime= LocalDateTime.of(2020,10,27,17,26,16);
+    timeTrackerC.testTotalTime("root",startDateTime, finalDateTime);//haurà de mostrar 370seg 6:10
+
+
+
+
+
+
+
+
+
+
