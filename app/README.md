@@ -1,4 +1,4 @@
-# App
+# codelab_timetracker
 
 A new Flutter project.
 

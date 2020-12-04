@@ -1,4 +1,5 @@
-import 'package:App/page_activities.dart';
+import 'package:codelab_timetracker/page_activities.dart';
+import 'package:codelab_timetracker/page_intervals.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -8,7 +9,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       title: 'TimeTracker',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
             subhead: TextStyle(fontSize:20.0),
             body1:TextStyle(fontSize:20.0)),
       ),
-      home: PageActivities(),
+      home: PageActivites() //PageIntervals()
     );
   }
 }

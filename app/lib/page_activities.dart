@@ -1,12 +1,14 @@
-import 'package:App/tree.dart';
+import 'package:codelab_timetracker/page_intervals.dart';
+import 'package:codelab_timetracker/tree.dart';
 import 'package:flutter/material.dart';
 
-class PageActivities extends StatefulWidget {
+
+class PageActivites extends StatefulWidget {
   @override
-  _PageActivitiesState createState() => _PageActivitiesState();
+  _PageActivitesState createState() => _PageActivitesState();
 }
 
-class _PageActivitiesState extends State<PageActivities> {
+class _PageActivitesState extends State<PageActivites> {
   Tree tree;
 
   @override
@@ -59,11 +61,17 @@ class _PageActivitiesState extends State<PageActivities> {
       return ListTile(
         title: Text('${activity.name}'),
         trailing: trailing,
-        onTap: () => {},
+        onTap: () => _navigateDownIntervals(index),
         // TODO, navigate down to show intervals
         onLongPress: () {},
         // TODO start/stop counting the time for tis task
       );
     }
+  }
+
+  void _navigateDownIntervals(int childId) {
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (context) => PageIntervals())
+    );
   }
 }
