@@ -196,6 +196,19 @@ public class TimeTracker extends Thread {
     TrackerNode task4 = createNewNode("read handout", (Project) proj5, false);
     TrackerNode task5 = createNewNode("first milestone", (Project) proj5, false);
 
+    proj1 = getTrackerNodeByName("software design");
+    proj1.setTag("java");proj1.setTag("flutter");
+    proj2 = getTrackerNodeByName("software testing");
+    proj2.setTag("c++");proj2.setTag("Java");proj2.setTag("python");
+    proj3 = getTrackerNodeByName("databases");
+    proj3.setTag("SQL");proj3.setTag("python");proj3.setTag("C++");
+    task2 = getTrackerNodeByName("first list");
+    task2.setTag("java");
+    task3 = getTrackerNodeByName("second list");
+    task3.setTag("Dart");
+    task5 = getTrackerNodeByName("first milestone");
+    task5.setTag("Java");task5.setTag("IntelliJ");
+
     LOGGER.info("Test A end");
   }
 
@@ -562,6 +575,11 @@ public class TimeTracker extends Thread {
     finalDateTime= LocalDateTime.of(2020,10,27,17,25,36);
     this.testTotalTime("T5",startDateTime, finalDateTime);//haurà de mostrar 90seg 1:30
     LOGGER.debug("Esperat 30seg 0:30");
+  }
+
+  public int adquirePresentActivityId() {
+    this.activityId += 1;
+    return this.activityId-1;
   }
 
   /*

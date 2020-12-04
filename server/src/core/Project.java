@@ -170,7 +170,11 @@ public class Project extends TrackerNode {
     JSONObject jsonObject = new JSONObject();
     jsonObject.put("type", "project");
     jsonObject.put("name", this.nodeName);
-    jsonObject.put("parentName", this.parentNode.getNodeName());
+    if(this.parentNode != null) {
+      jsonObject.put("parentName", this.parentNode.getNodeName());
+    } else {
+      jsonObject.put("parentName", "");
+    }
     //TODO
     jsonObject.put("nodeId", this.getNodeId());
     JSONArray tags = new JSONArray();
@@ -196,14 +200,22 @@ public class Project extends TrackerNode {
 
   public TrackerNode findActivityById(int n) {
     TrackerNode foundNode = null;
-    for (TrackerNode childNode : childNodes) {
-      if (childNode.getNodeId() == n) {
-        foundNode = childNode;
-        break;
-      } else if (childNode instanceof Project) {
-        ((Project) childNode).findActivityById(n);
+    if (this.getNodeId() == n) {
+      foundNode = this;
+    } else {
+      for (TrackerNode childNode : childNodes) {
+        if (childNode.getNodeId() == n) {
+          foundNode = childNode;
+          break;
+        } else if (childNode instanceof Project) {
+          foundNode = ((Project) childNode).findActivityById(n);
+          if (foundNode != null) {
+            break;
+          }
+        }
       }
     }
+
     return foundNode;
   }
 

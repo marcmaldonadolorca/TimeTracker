@@ -196,6 +196,19 @@ public class TimeTracker extends Thread {
     TrackerNode task4 = createNewNode("read handout", (Project) proj5, false);
     TrackerNode task5 = createNewNode("first milestone", (Project) proj5, false);
 
+    proj1 = getTrackerNodeByName("software design");
+    proj1.setTag("java");proj1.setTag("flutter");
+    proj2 = getTrackerNodeByName("software testing");
+    proj2.setTag("c++");proj2.setTag("Java");proj2.setTag("python");
+    proj3 = getTrackerNodeByName("databases");
+    proj3.setTag("SQL");proj3.setTag("python");proj3.setTag("C++");
+    task2 = getTrackerNodeByName("first list");
+    task2.setTag("java");
+    task3 = getTrackerNodeByName("second list");
+    task3.setTag("Dart");
+    task5 = getTrackerNodeByName("first milestone");
+    task5.setTag("Java");task5.setTag("IntelliJ");
+
     LOGGER.info("Test A end");
   }
 
