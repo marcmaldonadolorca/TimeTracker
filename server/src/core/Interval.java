@@ -1,5 +1,6 @@
 package core;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +100,22 @@ public class Interval implements Observer {
   //TODO
   public int getNodeId() {
     return this.nodeId;
+  }
+
+  public JSONObject toJson(){
+    JSONObject json = new JSONObject();
+    json.put("id",this.nodeId);
+    json.put("class","interval");
+    long durationInSeconds = this.timeSpent.toHours()*3600+this.timeSpent.toMinutes()*60+this.timeSpent.getSeconds();
+    json.put("duration",durationInSeconds);
+    if(this.startDateTime!=null){
+      json.put("initialDate",this.startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    }else { json.put("initialDate", JSONObject.NULL);}
+    if(this.finalDateTime!=null){
+      json.put("finalDate",this.finalDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    }else { json.put("finalDate", JSONObject.NULL);}
+
+    return json;
   }
 
 }
