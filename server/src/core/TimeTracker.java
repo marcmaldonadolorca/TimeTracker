@@ -591,7 +591,7 @@ public class TimeTracker extends Thread {
     timeTrackerAB.testA();
     timeTrackerAB.testB();
     //timeTrackerAB.testLoading("testB.json", false);//true si queremos comparar el árbol original y el cargado con JSON
-    System.out.println(timeTrackerAB.trackerNodes.get(0).toJson(1));
+    //System.out.println(timeTrackerAB.trackerNodes.get(0).toJson(1));
     //timeTrackerAB.testSearchByTag("python");
 
     //TimeTracker timeTrackerC = new TimeTracker(2);

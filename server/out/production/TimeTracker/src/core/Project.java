@@ -221,17 +221,39 @@ public class Project extends TrackerNode {
 
   public JSONObject toJson(int i) {
     JSONObject json = new JSONObject();
-    JSONObject parent = this.getJsonObject();
-    JSONArray childs = new JSONArray();
+    json.put("name", this.nodeName);
+    json.put("id",this.nodeId);
+    json.put("class","project");
+    long durationInSeconds = this.timeSpent.toHours()*3600+this.timeSpent.toMinutes()*60+this.timeSpent.getSeconds();
+    json.put("duration",durationInSeconds);
+    if(this.startDateTime!=null){
+      json.put("initialDate",this.startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    }else { json.put("initialDate", JSONObject.NULL);}
+    if(this.finalDateTime!=null){
+      json.put("finalDate",this.finalDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    }else { json.put("finalDate", JSONObject.NULL);}
 
     if (i > 0) {
+      JSONArray activities= new JSONArray();
       for (TrackerNode child : this.childNodes) {
-        childs.put(child.toJson(i-1));
+        activities.put(child.toJson(i-1));
       }
+      json.put("activities",activities);
     }
 
-    json.put("parent", parent);
-    json.put("childs", childs);
+
+//    JSONObject json = new JSONObject();
+//    JSONObject parent = this.getJsonObject();
+//    JSONArray childs = new JSONArray();
+//
+//    if (i > 0) {
+//      for (TrackerNode child : this.childNodes) {
+//        childs.put(child.toJson(i-1));
+//      }
+//    }
+//
+//    json.put("parent", parent);
+//    json.put("childs", childs);
 
 
     return json;
