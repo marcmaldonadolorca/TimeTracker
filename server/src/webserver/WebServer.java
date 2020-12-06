@@ -128,10 +128,13 @@ public class WebServer {
         case "start": {
           int id = Integer.parseInt(tokens[1]);
           TrackerNode activity = findActivityById(id);
+          System.out.println(activity.getNodeName()+"starts");
           assert (activity!=null);
           Task task = (Task) activity;
           int activityId =  adquirePresentActivityId();
-          task.startInterval(2,activityId);
+          System.out.println("with new ID from: "+activityId);
+          //task.startInterval(2,activityId);
+          currentTimeTracker.startCounting(task);
           //task.start();
           body = "{}";
           break;
@@ -139,9 +142,11 @@ public class WebServer {
         case "stop": {
           int id = Integer.parseInt(tokens[1]);
           TrackerNode activity = findActivityById(id);
+          System.out.println(activity.getNodeName()+"stops");
           assert (activity!=null);
           Task task = (Task) activity;
-          task.stopInterval();
+          //task.stopInterval();
+          currentTimeTracker.stopCounting(task);
           //task.stop();
           body = "{}";
           break;

@@ -87,25 +87,25 @@ class _PageActivitesState extends State<PageActivites> {
   }
 
   Widget _buildRow(Activity activity, int index) {
-    String strDuration = Duration(seconds: activity.duration).toString().split('.').first;
+    //String strDuration = Duration(seconds: activity.duration).toString().split('.').first;
     // split by '.' and taking first element of resulting list removes the microseconds part
     if (activity is Project) {
       return ListTile(
         title: Text('${activity.name}'),
-        trailing: Text('$strDuration'),
+        trailing: Text(_formatDuration(activity)),
         onTap: () => _navigateDownActivities(activity.id),
       );
     } else if (activity is Task) {
       Task task = activity as Task;
       // at the moment is the same, maybe changes in the future
       Widget trailing;
-      trailing = Text('$strDuration');
+      trailing = Text(_formatDuration(activity));
 
       return ListTile(
         title: Text('${activity.name}'),
         trailing: trailing,
         onTap: () => _navigateDownIntervals(activity.id),
-        onLongPress: () {
+        onLongPress: () { print("Premuda tecla llarga");
           if ((activity as Task).active) {
             stop(activity.id);
             _refresh(); // to show immediately that task has started
@@ -116,6 +116,11 @@ class _PageActivitesState extends State<PageActivites> {
         },
       );
     }
+  }
+
+  String _formatDuration(dynamic activity){
+    String strDuration = Duration(seconds: activity.duration).toString().split('.').first;
+    return strDuration;
   }
 
   void _refresh() async {

@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:codelab_timetracker/page_activities.dart';
 import 'package:flutter/material.dart';
 import 'package:codelab_timetracker/tree.dart' as Tree hide getTree;
 // to avoid collision with an Interval class in another library
 import 'package:codelab_timetracker/requests.dart';
 
+import 'package:codelab_timetracker/page_intervals.dart';
 
 class PageIntervals extends StatefulWidget {
   int id;
@@ -18,11 +21,16 @@ class _PageIntervalsState extends State<PageIntervals> {
   int id;
   Future<Tree.Tree> futureTree;
 
+  Timer _timer;
+  static const int periodeRefresh = 6;
+  // better a multiple of periode in TimeTracker, 2 seconds
+
   @override
   void initState() {
     super.initState();
     id = widget.id;
     futureTree = getTree(id);
+    _activateTimer();
   }
 
   @override
@@ -38,6 +46,11 @@ class _PageIntervalsState extends State<PageIntervals> {
             appBar: AppBar(
               title: Text(snapshot.data.root.name),
               actions: <Widget>[
+                // Icon(
+                //   Icons.update_outlined,
+                //   color: Colors.white,
+                //   size: 30.0,
+                // ),
                 IconButton(icon: Icon(Icons.home),
                     onPressed: () {
                       while(Navigator.of(context).canPop()) {
@@ -76,13 +89,39 @@ class _PageIntervalsState extends State<PageIntervals> {
   }
 
   Widget _buildRow(Tree.Interval interval, int index) {
-    String strDuration = Duration(seconds: interval.duration).toString().split('.').first;
-    String strInitialDate = interval.initialDate.toString().split('.')[0];
+    //String strDuration = Duration(seconds: interval.duration).toString().split('.').first;
+    //String strInitialDate = interval.initialDate.toString().split('.')[0];
     // this removes the microseconds part
-    String strFinalDate = interval.finalDate.toString().split('.')[0];
+    //String strFinalDate = interval.finalDate.toString().split('.')[0];
     return ListTile(
-      title: Text('from ${strInitialDate} to ${strFinalDate}'),
-      trailing: Text('$strDuration'),
+      title: Text('from ${_formatDate(interval.initialDate)} to ${_formatDate(interval.finalDate)}'),
+      trailing: Text(_formatDuration(interval)),
     );
   }
+
+  String _formatDuration(dynamic activity){
+    String strDuration = Duration(seconds: activity.duration).toString().split('.').first;
+    return strDuration;
+  }
+
+  String _formatDate(DateTime date){
+    String strInitialDate = date.toString().split('.')[0];
+    return strInitialDate;
+  }
+
+  void _activateTimer() {
+    _timer = Timer.periodic(Duration(seconds: periodeRefresh), (Timer t) {
+      futureTree = getTree(id);
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    // "The framework calls this method when this State object will never build again"
+    // therefore when going up
+    _timer.cancel();
+    super.dispose();
+  }
+
 }

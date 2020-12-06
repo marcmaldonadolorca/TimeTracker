@@ -131,7 +131,7 @@ public class TimeTracker extends Thread {
    * Esta función activa la tarea creando un intervalo asociado a ella. Además, añade el nuevo intervalo a la lista
    * de observers que serán notificados por cada período del reloj.
    */
-  private void startCounting(TrackerNode node) {
+  public void startCounting(TrackerNode node) {
     if (checkIfNodeIsTask(node) && !checkIfTaskIsRunning(node)) {
       //TODO
       Interval interval = ((Task) node).startInterval(this.period, this.activityId);
@@ -157,7 +157,7 @@ public class TimeTracker extends Thread {
   /*
    * Esta función desactiva la tarea y elimina el intervalo correspondiente de la lista de observers.
    */
-  private void stopCounting(TrackerNode node) {
+  public void stopCounting(TrackerNode node) {
     if (checkIfNodeIsTask(node) && checkIfTaskIsRunning(node)) {
       Interval activeInterval = ((Task) node).stopInterval();
       clockCounter.deleteObserver(activeInterval);
@@ -591,7 +591,7 @@ public class TimeTracker extends Thread {
     timeTrackerAB.testA();
     timeTrackerAB.testB();
     //timeTrackerAB.testLoading("testB.json", false);//true si queremos comparar el árbol original y el cargado con JSON
-    //System.out.println(timeTrackerAB.trackerNodes.get(0).toJson(1));
+    System.out.println(timeTrackerAB.trackerNodes.get(0).toJson(1));
     //timeTrackerAB.testSearchByTag("python");
 
     //TimeTracker timeTrackerC = new TimeTracker(2);

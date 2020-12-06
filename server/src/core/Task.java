@@ -351,7 +351,7 @@ public class Task extends TrackerNode {
     JSONObject json = new JSONObject();
     json.put("name", this.nodeName);
     json.put("id",this.nodeId);
-    json.put("class","project");
+    json.put("class","task");
     json.put("active",this.taskIsRunning);
     long durationInSeconds = this.timeSpent.toHours()*3600+this.timeSpent.toMinutes()*60+this.timeSpent.getSeconds();
     json.put("duration",durationInSeconds);
