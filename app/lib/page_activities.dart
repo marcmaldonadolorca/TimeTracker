@@ -90,16 +90,27 @@ class _PageActivitesState extends State<PageActivites> {
     //String strDuration = Duration(seconds: activity.duration).toString().split('.').first;
     // split by '.' and taking first element of resulting list removes the microseconds part
     if (activity is Project) {
+      if(!_getActiveTask(activity)){
       return ListTile(
         title: Text('${activity.name}'),
         trailing: Text(_formatDuration(activity)),
         onTap: () => _navigateDownActivities(activity.id),
       );
+      }else{
+        return ListTile(
+            title: Text('${activity.name}'),
+            trailing: Text(_formatDuration(activity),style: TextStyle(color:Colors.indigo)),
+            onTap: () => _navigateDownActivities(activity.id),);
+      }
     } else if (activity is Task) {
       Task task = activity as Task;
       // at the moment is the same, maybe changes in the future
       Widget trailing;
-      trailing = Text(_formatDuration(activity));
+      if(task.active == false) {
+        trailing = Text(_formatDuration(activity));
+      }else{
+        trailing = Text(_formatDuration(activity),style: TextStyle(color:Colors.indigo));
+      }
 
       return ListTile(
         title: Text('${activity.name}'),
@@ -116,6 +127,19 @@ class _PageActivitesState extends State<PageActivites> {
         },
       );
     }
+  }
+
+  bool _getActiveTask(Activity activity){
+    bool active = false;
+    for(int i=0;i<activity.children.length;i++){//la resposta del server per aquesta  vista és un arbre amb el seleccionat i els fills directes. FAltaria poder tenir tot l'arbre de sota
+      if(activity.children[i] is Task){
+        if(activity.children[i].active == true){
+          active = true;
+          break;
+        }
+      }
+    }
+    return active;
   }
 
   String _formatDuration(dynamic activity){

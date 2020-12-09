@@ -364,17 +364,18 @@ public class Task extends TrackerNode {
     JSONArray intervals= new JSONArray();
     if (i > 0) {
       for (Interval child : this.taskIntervals) {
-        intervals.put(child.toJson());
+        JSONObject childInterval = child.toJson();
+        if(child == this.taskIntervals.get(this.taskIntervals.size()-1)){
+          childInterval.put("active",this.taskIsRunning);
+        }else{
+          childInterval.put("active",false);
+        }
+        intervals.put(childInterval);
       }
     }
     json.put("intervals",intervals);
 
-//    JSONObject json = new JSONObject();
-//    JSONObject parent = this.getJsonObject();
-//    JSONArray childs = new JSONArray();
-//
-//    json.put("parent", parent);
-//    json.put("childs", childs);
+
 
     return json;
   }
