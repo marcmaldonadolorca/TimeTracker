@@ -93,11 +93,12 @@ class _PageIntervalsState extends State<PageIntervals> {
     //String strInitialDate = interval.initialDate.toString().split('.')[0];
     // this removes the microseconds part
     //String strFinalDate = interval.finalDate.toString().split('.')[0];
-    if(!interval.active){
-    return ListTile(
-      title: Text('from ${_formatDate(interval.initialDate)} to ${_formatDate(interval.finalDate)}' ),
-      trailing: Text(_formatDuration(interval)),
-    );}else{
+    if(!interval.active) {
+      return ListTile(
+        title: Text('from ${_formatDate(interval.initialDate)} to ${_formatDate(interval.finalDate)}' ),
+        trailing: Text(_formatDuration(interval)),
+      );
+    } else {
       return ListTile(
         title: Text('from ${_formatDate(interval.initialDate)} to ${_formatDate(interval.finalDate)}',
         style: TextStyle(color:Colors.indigo)),
