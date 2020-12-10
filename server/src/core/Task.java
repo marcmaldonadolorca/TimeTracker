@@ -361,6 +361,13 @@ public class Task extends TrackerNode {
     if(this.finalDateTime!=null){
       json.put("finalDate",this.finalDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }else { json.put("finalDate", JSONObject.NULL);}
+
+    JSONArray tags= new JSONArray();
+    for(String tag: this.tagList){
+      tags.put(tag);
+    }
+    json.put("tags",tags);
+
     JSONArray intervals= new JSONArray();
     if (i > 0) {
       for (Interval child : this.taskIntervals) {
@@ -375,8 +382,11 @@ public class Task extends TrackerNode {
     }
     json.put("intervals",intervals);
 
-
-
     return json;
   }
+
+  public boolean activeChilds(boolean running) {
+    return this.taskIsRunning;
+  }
+
 }

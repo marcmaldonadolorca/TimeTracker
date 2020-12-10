@@ -13,6 +13,8 @@ abstract class Activity {
   DateTime finalDate;
   int duration;
   List<dynamic> children = List<dynamic>();
+  List<String> tags = List<String>();
+
 
   Activity.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -20,11 +22,14 @@ abstract class Activity {
         initialDate = json['initialDate']==null ? null : _dateFormatter.parse(json['initialDate']),
         finalDate = json['finalDate']==null ? null : _dateFormatter.parse(json['finalDate']),
         duration = json['duration'];
+
 }
 
 
 class Project extends Activity {
+  bool activeChilds;
   Project.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    activeChilds = json['activeChilds'];
     if (json.containsKey('activities')) {
       // json has only 1 level because depth=1 or 0 in time_tracker
       for (Map<String, dynamic> jsonChild in json['activities']) {
@@ -38,6 +43,11 @@ class Project extends Activity {
         }
       }
     }
+    if (json.containsKey('tags')) {
+      for (String jsonTag in json['tags']) {
+        tags.add(jsonTag);
+      }
+    };
   }
 }
 
@@ -49,6 +59,11 @@ class Task extends Activity {
     for (Map<String, dynamic> jsonChild in json['intervals']) {
       children.add(Interval.fromJson(jsonChild));
     }
+    if (json.containsKey('tags')) {
+      for (String jsonTag in json['tags']) {
+        tags.add(jsonTag);
+      }
+    };
   }
 }
 

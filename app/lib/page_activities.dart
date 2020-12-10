@@ -328,7 +328,7 @@ class _PageActivitesState extends State<PageActivites> {
     // split by '.' and taking first element of resulting list removes the microseconds part
     this.activityId = activity.id;
     if (activity is Project) {
-      if(!_getActiveTask(activity)){
+      if(!activity.activeChilds){
         return ListTile(
           title: Text('${activity.name}'),
           trailing: Text(_formatDuration(activity)),
@@ -337,7 +337,7 @@ class _PageActivitesState extends State<PageActivites> {
       }else{
         return ListTile(
             title: Text('${activity.name}'),
-            trailing: Text(_formatDuration(activity),style: TextStyle(color:Colors.indigo)),
+            trailing: Text(_formatDuration(activity),style: TextStyle(color:Colors.blue[500])),
             onTap: () => _navigateDownActivities(activity.id),);
       }
     } else if (activity is Task) {
@@ -347,7 +347,7 @@ class _PageActivitesState extends State<PageActivites> {
       if(task.active == false) {
         trailing = Text(_formatDuration(activity));
       }else{
-        trailing = Text(_formatDuration(activity),style: TextStyle(color:Colors.indigo));
+        trailing = Text(_formatDuration(activity),style: TextStyle(color:Colors.blue[500]));
       }
 
       return ListTile(

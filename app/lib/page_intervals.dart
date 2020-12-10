@@ -101,8 +101,8 @@ class _PageIntervalsState extends State<PageIntervals> {
     } else {
       return ListTile(
         title: Text('from ${_formatDate(interval.initialDate)} to ${_formatDate(interval.finalDate)}',
-        style: TextStyle(color:Colors.indigo)),
-        trailing: Text(_formatDuration(interval),style: TextStyle(color:Colors.indigo)),
+        style: TextStyle(color:Colors.blue[500])),
+        trailing: Text(_formatDuration(interval),style: TextStyle(color:Colors.blue[500])),
       );
     }
 
