@@ -8,8 +8,11 @@ import visitor.NodeVisitor;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Comparator;
 
@@ -234,15 +237,21 @@ public class Project extends TrackerNode {
       json.put("finalDate",this.finalDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }else { json.put("finalDate", JSONObject.NULL);}
 
-    //TrackerNode.sort(this.childNodes, compare(<TrackerNode>));
-    //childNodes.sort(compare.comparing);
-//    Collections.sort(childNodes, new Comparator<CustomData>() {
-//      @Override
-//      public int compare(CustomData lhs, CustomData rhs) {
-//        // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
-//        return lhs.customInt > rhs.customInt ? -1 : (lhs.customInt < rhs.customInt) ? 1 : 0;
-//      }
-//    });
+
+    Collections.sort(childNodes, new Comparator<TrackerNode>() {
+      @Override
+      public int compare(TrackerNode o1, TrackerNode o2) {
+        if(o1.getFinalDateTime().isAfter(o2.getFinalDateTime())) {
+          return 1;
+        }
+        else if(o1.getFinalDateTime().isBefore(o2.getFinalDateTime())) {
+          return -1;
+        }
+        else{
+          return 0;
+        }
+      }
+    });
 
     JSONArray tags= new JSONArray();
     for(String tag: this.tagList){
