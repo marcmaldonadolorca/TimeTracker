@@ -233,29 +233,35 @@ public class Project extends TrackerNode {
       json.put("finalDate",this.finalDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }else { json.put("finalDate", JSONObject.NULL);}
 
+    JSONArray tags= new JSONArray();
+    for(String tag: this.tagList){
+      tags.put(tag);
+    }
+    json.put("tags",tags);
+
+    JSONArray activities= new JSONArray();
     if (i > 0) {
-      JSONArray activities= new JSONArray();
       for (TrackerNode child : this.childNodes) {
         activities.put(child.toJson(i-1));
       }
-      json.put("activities",activities);
     }
+    json.put("activities",activities);
 
-
-//    JSONObject json = new JSONObject();
-//    JSONObject parent = this.getJsonObject();
-//    JSONArray childs = new JSONArray();
-//
-//    if (i > 0) {
-//      for (TrackerNode child : this.childNodes) {
-//        childs.put(child.toJson(i-1));
-//      }
-//    }
-//
-//    json.put("parent", parent);
-//    json.put("childs", childs);
-
+    boolean running = false;
+    running = activeChilds(running);
+    json.put("activeChilds",running);
 
     return json;
   }
+  //recursivament explora arbre fills fins que troba una tasca active
+  public boolean activeChilds(boolean running){
+    int i = 0;
+    while(!running && i<childNodes.size()){
+      running = childNodes.get(i).activeChilds(running);
+      i++;
+    }
+    return running;
+  }
+
+
 }

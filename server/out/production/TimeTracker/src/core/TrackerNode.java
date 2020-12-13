@@ -58,6 +58,8 @@ public abstract class TrackerNode {
 
   public abstract JSONObject toJson(int i);
 
+  public abstract  boolean activeChilds(boolean running);
+
   //TODO
   public int getNodeId() {
     return this.nodeId;

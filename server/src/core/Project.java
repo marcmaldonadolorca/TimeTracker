@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Comparator;
 
 /*
  * La clase Project es la encargada de almacenar y gestionar los distintos proyectos (Project) y tareas (Task)
@@ -233,6 +234,16 @@ public class Project extends TrackerNode {
       json.put("finalDate",this.finalDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }else { json.put("finalDate", JSONObject.NULL);}
 
+    //TrackerNode.sort(this.childNodes, compare(<TrackerNode>));
+    //childNodes.sort(compare.comparing);
+//    Collections.sort(childNodes, new Comparator<CustomData>() {
+//      @Override
+//      public int compare(CustomData lhs, CustomData rhs) {
+//        // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+//        return lhs.customInt > rhs.customInt ? -1 : (lhs.customInt < rhs.customInt) ? 1 : 0;
+//      }
+//    });
+
     JSONArray tags= new JSONArray();
     for(String tag: this.tagList){
       tags.put(tag);
@@ -261,6 +272,13 @@ public class Project extends TrackerNode {
       i++;
     }
     return running;
+  }
+
+  //Per la sobre carrega de la comparació per ordenar
+  //finalDateTime.isBefore(this.finalDateTime)
+  //finalDateTime.isAfter(this.finalDateTime)
+  public boolean compare(TrackerNode first, TrackerNode second){
+    return first.getFinalDateTime().isAfter(second.getFinalDateTime());
   }
 
 
