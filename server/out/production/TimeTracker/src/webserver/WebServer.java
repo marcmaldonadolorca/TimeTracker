@@ -2,13 +2,24 @@ package webserver;
 
 import core.TimeTracker;
 import core.TrackerNode;
+import core.Project;
 import core.Task;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.text.SimpleDateFormat;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 // Based on
@@ -133,9 +144,7 @@ public class WebServer {
           Task task = (Task) activity;
           int activityId =  adquirePresentActivityId();
           System.out.println("with new ID from: "+activityId);
-          //task.startInterval(2,activityId);
           currentTimeTracker.startCounting(task);
-          //task.start();
           body = "{}";
           break;
         }
@@ -145,18 +154,62 @@ public class WebServer {
           System.out.println(activity.getNodeName()+"stops");
           assert (activity!=null);
           Task task = (Task) activity;
-          //task.stopInterval();
           currentTimeTracker.stopCounting(task);
-          //task.stop();
           body = "{}";
           break;
         }
         // TODO: add new task, project
         case "add": {
+          //0=ordre, 1=nodePare, 2=nom, 3=type,4..final=tags
+          int id = Integer.parseInt(tokens[1]);
+          String name = tokens[2];
+          Boolean isProject = Boolean.parseBoolean(tokens[3]);
+          TrackerNode parentNode = currentTimeTracker.getTrackerNodeByName(name);
+          String parentName = parentNode.getNodeName();
+          TrackerNode newNode = currentTimeTracker.createNewNode(parentName, (Project) parentNode, isProject);
+          for(int i=4; i<tokens.length; i++) {
+             newNode.setTag(tokens[i]);
+          }
+          body = "{}";
           break;
         }
-        // TODO: edit task, project properties
-        case "edit": {
+        // TODO:tags
+        case "searchTag": {//0=ordre, 1=tags(únic)
+          String tag = tokens[1];
+          List<TrackerNode> nodesWithTag = currentTimeTracker.searchByTag(tag);
+          assert (nodesWithTag!=null);
+          JSONArray listNodes = new JSONArray();
+          for (TrackerNode node: nodesWithTag){
+            JSONObject aux = node.toJson(0);
+            listNodes.put(aux);
+          }
+          body = listNodes.toString();//Repassar la app que desmonti el JSON correctament!!!!!!
+          break;
+        }
+        // TODO:totalTime
+        case "searchTime": { //0=ordre, 1=nom node, 2=start, 3=final times, 4=cost
+          String name = tokens[1];
+          //Per revisar pantalles 18 i 19 quin format passa les dates
+          DateTimeFormatter formater1 = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
+          LocalDateTime start = LocalDateTime.parse(tokens[2],formater1);
+          LocalDateTime end = LocalDateTime.parse(tokens[3],formater1);
+          Duration time = currentTimeTracker.searchTotalTime(name, start, end);
+          long durationInHours =  time.toHours()+(time.toMinutes()/60);
+          int aux = (int) (durationInHours*100);
+          float result = aux/100f;
+          body = Float.toString(result);
+          break;
+        }
+        // TODO:recent
+        case "searchRecent": {
+          LinkedList<Task> recentTasks = currentTimeTracker.getRecentTasks();
+          assert (recentTasks!=null);
+          JSONArray listNodes = new JSONArray();
+          for (TrackerNode node: recentTasks){
+            JSONObject aux = node.toJson(0);
+            listNodes.put(aux);
+          }
+          body = listNodes.toString();//Repassar la app que desmonti el JSON correctament!!!!!!
           break;
         }
         default:

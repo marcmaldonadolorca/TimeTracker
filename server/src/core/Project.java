@@ -238,20 +238,20 @@ public class Project extends TrackerNode {
     }else { json.put("finalDate", JSONObject.NULL);}
 
 
-    Collections.sort(childNodes, new Comparator<TrackerNode>() {
-      @Override
-      public int compare(TrackerNode o1, TrackerNode o2) {
-        if(o1.getFinalDateTime().isAfter(o2.getFinalDateTime())) {
-          return 1;
-        }
-        else if(o1.getFinalDateTime().isBefore(o2.getFinalDateTime())) {
-          return -1;
-        }
-        else{
-          return 0;
-        }
-      }
-    });
+//    Collections.sort(childNodes, new Comparator<TrackerNode>() {
+//      @Override
+//      public int compare(TrackerNode o1, TrackerNode o2) {
+//        if(o1.getFinalDateTime().isAfter(o2.getFinalDateTime())) {
+//          return 1;
+//        }
+//        else if(o1.getFinalDateTime().isBefore(o2.getFinalDateTime())) {
+//          return -1;
+//        }
+//        else{
+//          return 0;
+//        }
+//      }
+//    });
 
     JSONArray tags= new JSONArray();
     for(String tag: this.tagList){
@@ -269,7 +269,11 @@ public class Project extends TrackerNode {
 
     boolean running = false;
     running = activeChilds(running);
-    json.put("activeChilds",running);
+    //json.put("activeChilds",running);
+    json.put("active",running);
+    if(this.parentNode != null){
+      json.put("parentName", this.parentNode.getNodeName());
+    }
 
     return json;
   }

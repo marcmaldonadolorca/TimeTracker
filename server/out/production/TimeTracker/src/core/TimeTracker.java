@@ -1,5 +1,6 @@
 package core;
 
+import java.time.Duration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import visitor.SearchByTagVisitor;
@@ -7,10 +8,10 @@ import visitor.TotalTimeVisitor;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 
 /**
@@ -27,6 +28,8 @@ public class TimeTracker extends Thread {
   private int activityId; //TODO
   private final int period;
   private final static Logger LOGGER = LoggerFactory.getLogger("core.TimeTracker");
+  private LinkedList<Integer> lastActiveTasks;
+  final int MAX_RECENT = 6;
 
   /*
    * El constructor recibe el período de actualización de los tiempos de los intervalos.
@@ -36,16 +39,34 @@ public class TimeTracker extends Thread {
     this.activityId = 0;
     this.root = createNewNode("root", null, true);
     this.period = period;
+    lastActiveTasks = new LinkedList<>();
     initClock();
 
     LOGGER.info("TimeTracker creat.");
+  }
+
+  public LinkedList<Task> getRecentTasks(){
+    LinkedList<Task> taskList = new LinkedList<>();
+    for (Integer i : this.lastActiveTasks) {
+      taskList.add((Task) this.getTrackerNodeById(i));
+    }
+    return taskList;
+  }
+
+  private TrackerNode getTrackerNodeById(int nodeId){
+    for(TrackerNode node : this.trackerNodes){
+      if(node.getNodeId()==nodeId){
+        return node;
+      }
+    }
+    return null;
   }
 
   public List<TrackerNode> getTrackerNodes() {
     return trackerNodes;
   }
 
-  private TrackerNode getTrackerNodeByName(String nodeName) {
+  public TrackerNode getTrackerNodeByName(String nodeName) {
     TrackerNode foundNode = null;
     for (TrackerNode trackerNodes : trackerNodes) {
       if (trackerNodes.getNodeName().equals(nodeName)) {
@@ -68,7 +89,7 @@ public class TimeTracker extends Thread {
   }*/
 
 
-  //TODO
+
   public void createNewTreeFromJson(JSONArray objectsArray, int biggestIdPlusOne) {
   //public void createNewTreeFromJson(JSONArray objectsArray) {
     this.trackerNodes.clear();
@@ -102,7 +123,7 @@ public class TimeTracker extends Thread {
     LOGGER.info("Load end successfully");
   }
 
-  private TrackerNode createNewNode(String nodeName, Project parentNode, boolean isProjectType) {
+  public TrackerNode createNewNode(String nodeName, Project parentNode, boolean isProjectType) {
     TrackerNode newNode;
 
     if (isProjectType) {
@@ -137,6 +158,13 @@ public class TimeTracker extends Thread {
       Interval interval = ((Task) node).startInterval(this.period, this.activityId);
       //Interval interval = ((Task) node).startInterval(this.period);
       //TODO
+      int nodeId=node.getNodeId();//4
+
+      if(this.lastActiveTasks.contains(node)){this.lastActiveTasks.remove(nodeId);}//3.2.4.5->3.2.5
+      this.lastActiveTasks.addFirst(nodeId);//4.3.2.5
+      if (this.lastActiveTasks.size() > MAX_RECENT){
+        this.lastActiveTasks.removeLast();
+      }
       this.activityId += 1;
       clockCounter.addObserver(interval);
       LOGGER.info("Observer afegit");
@@ -502,7 +530,13 @@ public class TimeTracker extends Thread {
 
   }
 
-  private void testSearchByTag(String tag){
+  public List<TrackerNode> searchByTag(String tag){
+    SearchByTagVisitor tagSearcher = new SearchByTagVisitor(tag);
+    this.getTrackerNodes().get(0).accept(tagSearcher);
+    return tagSearcher.getNodesWithTag();
+  }
+
+  public void testSearchByTag(String tag){
     this.testLoading("testB.json", false);
     LOGGER.info("Iniciant test search by tag\n");
 
@@ -532,6 +566,13 @@ public class TimeTracker extends Thread {
     }
 
     LOGGER.info("\nFinal test searchByTag\n");
+  }
+
+  public Duration searchTotalTime(String nodeName, LocalDateTime startDateTime, LocalDateTime finalDateTime){
+    TrackerNode nodeTarget = this.getTrackerNodeByName(nodeName);
+    TotalTimeVisitor totalTimeVisitor = new TotalTimeVisitor(startDateTime,finalDateTime);
+    nodeTarget.accept(totalTimeVisitor);
+    return totalTimeVisitor.getDuration();
   }
 
   private void testTotalTime(String nodeName, LocalDateTime startDateTime, LocalDateTime finalDateTime){

@@ -97,6 +97,7 @@ class _PageActivitesState extends State<PageActivites> {
                     }),
                 IconButton(icon: Icon(Icons.info_outline),
                     onPressed: () {
+                  //A LA PAGEACTIVITIES SEMPRE SERÀ PROJECT PK SINÓ ESTARIEM A LA PAGE_INTERVALS!!!!!!!!
                       if (snapshot.data.root is Project ) {
                         showDialog(
                             context: context,
@@ -129,7 +130,8 @@ class _PageActivitesState extends State<PageActivites> {
                                           ),
                                           children: <TextSpan>[
                                             TextSpan(
-                                              text: (snapshot.data.root as Project).duration.toString(),
+                                              //text: (snapshot.data.root as Project).duration.toString(),
+                                              text: _formatDuration((snapshot.data.root as Project)),
                                               style: TextStyle(color: Colors.blue[500]),
                                             )
                                           ],
@@ -145,7 +147,8 @@ class _PageActivitesState extends State<PageActivites> {
                                           ),
                                           children: <TextSpan>[
                                             TextSpan(
-                                              text: (snapshot.data.root as Project).initialDate.toString(),
+                                              //text: (snapshot.data.root as Project).initialDate.toString(),
+                                              text: _formatDate((snapshot.data.root as Project).initialDate),
                                               style: TextStyle(color: Colors.blue[500]),
                                             )
                                           ],
@@ -161,7 +164,8 @@ class _PageActivitesState extends State<PageActivites> {
                                           ),
                                           children: <TextSpan>[
                                             TextSpan(
-                                              text: (snapshot.data.root as Project).finalDate.toString(),
+                                              //text: (snapshot.data.root as Project).finalDate.toString(),
+                                              text: _formatDate((snapshot.data.root as Project).finalDate),
                                               style: TextStyle(color: Colors.blue[500]),
                                             )
                                           ],
@@ -289,25 +293,25 @@ class _PageActivitesState extends State<PageActivites> {
             ),
 
 
-            bottomNavigationBar: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.add),
-                  label: 'Business',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.info_outline),
-                  label: 'School',
-                ),
-              ],
-              currentIndex: _selectedIndex,
-              selectedItemColor: Colors.blue[500],
-              onTap: _onItemTapped,
-            )
+            // bottomNavigationBar: BottomNavigationBar(
+            //   items: const <BottomNavigationBarItem>[
+            //     BottomNavigationBarItem(
+            //       icon: Icon(Icons.home),
+            //       label: 'Home',
+            //     ),
+            //     BottomNavigationBarItem(
+            //       icon: Icon(Icons.add),
+            //       label: 'Business',
+            //     ),
+            //     BottomNavigationBarItem(
+            //       icon: Icon(Icons.info_outline),
+            //       label: 'School',
+            //     ),
+            //   ],
+            //   currentIndex: _selectedIndex,
+            //   selectedItemColor: Colors.blue[500],
+            //   onTap: _onItemTapped,
+            // )
           );
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}" ?? "Error default");
@@ -328,43 +332,62 @@ class _PageActivitesState extends State<PageActivites> {
     // split by '.' and taking first element of resulting list removes the microseconds part
     this.activityId = activity.id;
     if (activity is Project) {
-      if(!activity.activeChilds){
+      //if(!activity.activeChilds){
+      if(!activity.active){
         return ListTile(
-          title: Text('${activity.name}'),
-          trailing: Text(_formatDuration(activity)),
+          title: Text('${activity.name}', style: TextStyle(fontWeight: FontWeight.bold),),
+          //trailing: Text(_formatDuration(activity)),
+          subtitle: Text(_formatDuration(activity)),
+          leading: new Icon(Icons.folder, color: Colors.amber,),
           onTap: () => _navigateDownActivities(activity.id),
-        );
+        );//
       }else{
         return ListTile(
-            title: Text('${activity.name}'),
-            trailing: Text(_formatDuration(activity),style: TextStyle(color:Colors.blue[500])),
+            title: Text('${activity.name}', style: TextStyle(fontWeight: FontWeight.bold),),
+            //trailing: Text(_formatDuration(activity),style: TextStyle(color:Colors.blue[500])),
+            subtitle: Text(_formatDuration(activity),style: TextStyle(color:Colors.blue[500])),
+            leading: new Icon(Icons.folder, color: Colors.amber,),
             onTap: () => _navigateDownActivities(activity.id),);
       }
     } else if (activity is Task) {
       Task task = activity as Task;
       // at the moment is the same, maybe changes in the future
-      Widget trailing;
+      Widget timeSpent;
       if(task.active == false) {
-        trailing = Text(_formatDuration(activity));
+        timeSpent = Text(_formatDuration(activity));
       }else{
-        trailing = Text(_formatDuration(activity),style: TextStyle(color:Colors.blue[500]));
+        timeSpent = Text(_formatDuration(activity),style: TextStyle(color:Colors.blue[500]));
       }
 
       return ListTile(
-        title: Text('${activity.name}'),
-        trailing: trailing,
+        title: Text('${activity.name}', style: TextStyle(fontWeight: FontWeight.bold),),
+        subtitle: timeSpent,
+        leading: new Icon(Icons.assignment, color: Colors.orange,),//list_alt_rounded//description//note
+        trailing: IconButton(icon: _activeTask(activity),
+            onPressed: () { _startOrStop(activity); }),
         onTap: () => _navigateDownIntervals(activity.id),
-        onLongPress: () { print("Premuda tecla llarga");
-          if ((activity as Task).active) {
-            stop(activity.id);
-            _refresh(); // to show immediately that task has started
-          } else {
-            start(activity.id);
-            _refresh(); // to show immediately that task has stopped
-          }
+        onLongPress: () { _startOrStop(activity);
         },
       );
     }
+  }
+
+  void _startOrStop(Activity activity){
+    print("Premuda tecla llarga per: "+activity.id.toString()+" name: "+activity.name);
+    if (activity .active) {
+      stop(activity.id);
+      _refresh(); // to show immediately that task has started
+    } else {
+      start(activity.id);
+      _refresh(); // to show immediately that task has stopped
+    }
+  }
+
+  Widget _activeTask(Activity activity){
+    if(activity.active == false){
+      return Icon(Icons.play_arrow, color: Colors.blue.shade400,);
+    }
+    else { return Icon(Icons.pause, color: Colors.blue.shade400,);}
   }
 
   bool _getActiveTask(Activity activity){
@@ -384,6 +407,12 @@ class _PageActivitesState extends State<PageActivites> {
     String strDuration = Duration(seconds: activity.duration).toString().split('.').first;
     return strDuration;
   }
+
+  String _formatDate(DateTime date){
+    String strInitialDate = date.toString().split('.')[0];
+    return strInitialDate;
+  }
+
 
   void _refresh() async {
     futureTree = getTree(id); // to be used in build()

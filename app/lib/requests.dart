@@ -52,3 +52,11 @@ Future<void> stop(int id) async {
     throw Exception('Failed to get children');
   }
 }
+
+//create("add" pel server switch case)
+
+//searchByTag("searchTag" pel server...)
+
+//totalTime("searchTime" ...)
+
+//searchRecent("searchRecent"...)

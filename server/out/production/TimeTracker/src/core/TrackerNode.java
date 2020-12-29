@@ -32,7 +32,7 @@ public abstract class TrackerNode {
 
   public abstract void accept(NodeVisitor visitor);
 
-  protected void setTag(String tag) {this.tagList.add(tag);}
+  public void setTag(String tag) {this.tagList.add(tag);}
 
   public List<String> getTagList(){return this.tagList;}
 
@@ -64,4 +64,6 @@ public abstract class TrackerNode {
   public int getNodeId() {
     return this.nodeId;
   }
+
+
 }

@@ -159,7 +159,8 @@ public class TimeTracker extends Thread {
       //Interval interval = ((Task) node).startInterval(this.period);
       //TODO
       int nodeId=node.getNodeId();//4
-      this.lastActiveTasks.remove(nodeId);//3.2.4.5->3.2.5
+
+      if(this.lastActiveTasks.contains(node)){this.lastActiveTasks.remove(nodeId);}//3.2.4.5->3.2.5
       this.lastActiveTasks.addFirst(nodeId);//4.3.2.5
       if (this.lastActiveTasks.size() > MAX_RECENT){
         this.lastActiveTasks.removeLast();

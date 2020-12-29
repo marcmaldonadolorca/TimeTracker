@@ -8,9 +8,13 @@ import visitor.NodeVisitor;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Comparator;
 
 /*
  * La clase Project es la encargada de almacenar y gestionar los distintos proyectos (Project) y tareas (Task)
@@ -233,6 +237,22 @@ public class Project extends TrackerNode {
       json.put("finalDate",this.finalDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }else { json.put("finalDate", JSONObject.NULL);}
 
+
+//    Collections.sort(childNodes, new Comparator<TrackerNode>() {
+//      @Override
+//      public int compare(TrackerNode o1, TrackerNode o2) {
+//        if(o1.getFinalDateTime().isAfter(o2.getFinalDateTime())) {
+//          return 1;
+//        }
+//        else if(o1.getFinalDateTime().isBefore(o2.getFinalDateTime())) {
+//          return -1;
+//        }
+//        else{
+//          return 0;
+//        }
+//      }
+//    });
+
     JSONArray tags= new JSONArray();
     for(String tag: this.tagList){
       tags.put(tag);
@@ -249,7 +269,11 @@ public class Project extends TrackerNode {
 
     boolean running = false;
     running = activeChilds(running);
-    json.put("activeChilds",running);
+    //json.put("activeChilds",running);
+    json.put("active",running);
+    if(this.parentNode != null){
+      json.put("parentName", this.parentNode.getNodeName());
+    }
 
     return json;
   }
@@ -261,6 +285,13 @@ public class Project extends TrackerNode {
       i++;
     }
     return running;
+  }
+
+  //Per la sobre carrega de la comparació per ordenar
+  //finalDateTime.isBefore(this.finalDateTime)
+  //finalDateTime.isAfter(this.finalDateTime)
+  public boolean compare(TrackerNode first, TrackerNode second){
+    return first.getFinalDateTime().isAfter(second.getFinalDateTime());
   }
 
 
