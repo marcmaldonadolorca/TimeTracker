@@ -38,7 +38,7 @@ Future<void> start(int id) async {
     print("statusCode=$response.statusCode");
   } else {
     print("statusCode=$response.statusCode");
-    throw Exception('Failed to get children');
+    throw Exception('Failed to start task');
   }
 }
 
@@ -49,11 +49,21 @@ Future<void> stop(int id) async {
     print("statusCode=$response.statusCode");
   } else {
     print("statusCode=$response.statusCode");
-    throw Exception('Failed to get children');
+    throw Exception('Failed to stop task');
   }
 }
 
 //create("add" pel server switch case)
+Future<void> add(int parentId, String parentName, String newName, String tagsByComas, bool isProject) async {
+  String uri = "$baseUrl/add?$parentId&$newName&$tagsByComas&$isProject";
+  final response = await client.get(uri);
+  if (response.statusCode == 200) {
+    print("statusCode=$response.statusCode");
+  } else {
+    print("statusCode=$response.statusCode");
+    throw Exception('Failed to create activity');
+  }
+}
 
 //searchByTag("searchTag" pel server...)
 

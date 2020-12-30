@@ -1,4 +1,5 @@
 import 'package:codelab_timetracker/page_intervals.dart';
+import 'package:codelab_timetracker/search_options.dart';
 //import 'package:codelab_timetracker/tree.dart';
 import 'package:codelab_timetracker/tree.dart' hide getTree;
 // the old getTree()
@@ -9,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
+import 'create_activity.dart';
 
 
 class PageActivites extends StatefulWidget {
@@ -39,7 +42,7 @@ class _PageActivitesState extends State<PageActivites> {
 
   }
 
-  int _selectedIndex = 0;
+  /*int _selectedIndex = 0;
   static const TextStyle optionStyle =
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
@@ -69,7 +72,7 @@ class _PageActivitesState extends State<PageActivites> {
           PageActivites(0);
       }
     });
-  }
+  }*/
 
   // future with listview
   // https://medium.com/nonstopio/flutter-future-builder-with-list-view-builder-d7212314e8c9
@@ -139,6 +142,23 @@ class _PageActivitesState extends State<PageActivites> {
                                       ),
                                       RichText(
                                         text: TextSpan(
+                                          text: 'Tags: ',
+                                          style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: Colors.grey[700],
+                                              fontWeight: FontWeight.bold
+                                          ),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              //text: (snapshot.data.root as Project).duration.toString(),
+                                              text: snapshot.data.root.tags[0],
+                                              style: TextStyle(color: Colors.blue[500]),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      RichText(
+                                        text: TextSpan(
                                           text: 'Start date: ',
                                           style: TextStyle(
                                               fontSize: 18.0,
@@ -187,6 +207,22 @@ class _PageActivitesState extends State<PageActivites> {
                                           ],
                                         ),
                                       ),
+                                      RichText(
+                                        text: TextSpan(
+                                          text: 'Active: ',
+                                          style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: Colors.grey[700],
+                                              fontWeight: FontWeight.bold
+                                          ),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: snapshot.data.root.active.toString(),
+                                              style: TextStyle(color: Colors.blue[500]),
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -216,21 +252,11 @@ class _PageActivitesState extends State<PageActivites> {
                                       ),
                                     ),
                                   ),
-                                  /*RaisedButton(
-                                      child: const Text(
-                                        "Close",
-                                        style: TextStyle(
-                                            fontSize: 20.0,
-                                            color: Colors.white
-                                        )
-                                      ),
-                                      onPressed: () {
-                                        Navigator.of(context, rootNavigator: true).pop('dialog');
-                                      })*/
                                 ],
                               );
                             });
-                      } else if (snapshot.data.root is Task ) {
+                      }
+                     /* else if (snapshot.data.root is Task ) { //A LA PAGEACTIVITIES SEMPRE SERÀ PROJECT PK SINÓ ESTARIEM A LA PAGE_INTERVALS!!!!!!!!
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -263,12 +289,12 @@ class _PageActivitesState extends State<PageActivites> {
                                 ],
                               );
                             });
-                      }
+                      }*/
                     }
                 ),
                 IconButton(icon: Icon(Icons.search),
                     onPressed: () {
-                  print(snapshot.data.root.toString());
+                      _navigateSearchOptions();
                       //TODO: llamar a la página de búsqueda
                       }
                     ),
@@ -287,6 +313,7 @@ class _PageActivitesState extends State<PageActivites> {
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 // Add your onPressed code here!
+                _navigateCreateActivity(snapshot.data.root.id, snapshot.data.root.name);
               },
               child: Icon(Icons.add),
               backgroundColor: Colors.blue[500],
@@ -374,7 +401,7 @@ class _PageActivitesState extends State<PageActivites> {
 
   void _startOrStop(Activity activity){
     print("Premuda tecla llarga per: "+activity.id.toString()+" name: "+activity.name);
-    if (activity .active) {
+    if (activity.active) {
       stop(activity.id);
       _refresh(); // to show immediately that task has started
     } else {
@@ -440,6 +467,28 @@ class _PageActivitesState extends State<PageActivites> {
     )).then( (var value) {
       _activateTimer();
       _refresh();
+    });
+  }
+
+  void _navigateCreateActivity(int parentId, String parentName) {
+    _timer.cancel();
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(
+      builder: (context) => CreateActivity(parentId, parentName),
+    )).then( (var value) {
+      //_activateTimer();
+      //_refresh();
+    });
+  }
+
+  void _navigateSearchOptions() {
+    _timer.cancel();
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(
+      builder: (context) => SearchOptions(),
+    )).then( (var value) {
+      //_activateTimer();
+      //_refresh();
     });
   }
 

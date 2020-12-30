@@ -24,7 +24,7 @@ abstract class Activity {
         finalDate = json['finalDate']==null ? null : _dateFormatter.parse(json['finalDate']),
         duration = json['duration'],
         active = json['active'],
-        parentName = json['parentName'];
+        parentName = (json['parentName'] == "root") ? "TimeTracker": json['parentName'];
         // if (json['tags'].length()!=0){
         //   String tmp = "";
         //   for(String aux in json['tags']){
@@ -103,9 +103,12 @@ class Interval {
 void _setTags(Activity activity, Map<String, dynamic> json){
   //if (!json['tags'].isEmpty()){
     String tmp = "";
+    String char = "";
     for(String aux in json['tags']){
-      tmp=tmp+","+aux;
+      tmp=tmp+char+aux;
+      char = ",";
     }
+
     activity.tags.add(tmp);//de moment tot junt per imprimir a flutter details
   //}else activity.tags.add("--");
 }

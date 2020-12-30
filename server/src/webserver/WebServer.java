@@ -160,15 +160,22 @@ public class WebServer {
         }
         // TODO: add new task, project
         case "add": {
-          //0=ordre, 1=nodePare, 2=nom, 3=type,4..final=tags
+          //0=ordre, 1=parentId, 2=nom, 3=tags(separats per comes), 4=type,
           int id = Integer.parseInt(tokens[1]);
           String name = tokens[2];
-          Boolean isProject = Boolean.parseBoolean(tokens[3]);
-          TrackerNode parentNode = currentTimeTracker.getTrackerNodeByName(name);
+          name = name.replace("%20"," ");//a la url espai és %20(es pot canviar abans o després)
+          Boolean isProject = Boolean.parseBoolean(tokens[4]);
+          TrackerNode parentNode = currentTimeTracker.getTrackerNodeById(id);
           String parentName = parentNode.getNodeName();
-          TrackerNode newNode = currentTimeTracker.createNewNode(parentName, (Project) parentNode, isProject);
-          for(int i=4; i<tokens.length; i++) {
-             newNode.setTag(tokens[i]);
+          TrackerNode newNode = currentTimeTracker.createNewNode(name, (Project) parentNode, isProject);
+          //trencar l'string dels tags
+          String tags = tokens[3];
+          String[] listTags = tags.split(",");
+          for(String newTag: listTags){
+            if(newTag.charAt(0)=='%'){
+              newTag = newTag.replaceFirst("%20","");//per eliminar possibles espai despres de coma
+            }
+            newNode.setTag(newTag);
           }
           body = "{}";
           break;

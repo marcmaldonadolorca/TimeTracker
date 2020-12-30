@@ -369,18 +369,32 @@ public class Task extends TrackerNode {
     json.put("tags",tags);
 
     JSONArray intervals= new JSONArray();
-    if (i > 0) {
-      for (Interval child : this.taskIntervals) {
-        JSONObject childInterval = child.toJson();
-        if(child == this.taskIntervals.get(this.taskIntervals.size()-1)){
+    if (i > 0 && !this.taskIntervals.isEmpty()) {
+//      for (Interval child : this.taskIntervals) {
+//        JSONObject childInterval = child.toJson();
+//        if(child == this.taskIntervals.get(this.taskIntervals.size()-1)){
+//          childInterval.put("active",this.taskIsRunning);
+//        }else{
+//          childInterval.put("active",false);
+//        }
+//        intervals.put(childInterval);
+//      }
+      for(int index = this.taskIntervals.size()-1; index>=0; index--){
+        JSONObject childInterval = this.taskIntervals.get(index).toJson();
+        if(index == this.taskIntervals.size()-1){
           childInterval.put("active",this.taskIsRunning);
         }else{
           childInterval.put("active",false);
         }
+        childInterval.put("number",index);
         intervals.put(childInterval);
       }
+
+
+
     }
     json.put("intervals",intervals);
+    json.put("parentName", this.parentNode.getNodeName());
 
     return json;
   }

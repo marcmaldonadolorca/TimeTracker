@@ -167,7 +167,7 @@ class _PageIntervalsState extends State<PageIntervals> {
                               ),
                               RichText(
                                 text: TextSpan(
-                                  text: 'Status: ',
+                                  text: 'Active: ',
                                   style: TextStyle(
                                       fontSize: 18.0,
                                       color: Colors.grey[700],

@@ -53,7 +53,7 @@ public class TimeTracker extends Thread {
     return taskList;
   }
 
-  private TrackerNode getTrackerNodeById(int nodeId){
+  public TrackerNode getTrackerNodeById(int nodeId){
     for(TrackerNode node : this.trackerNodes){
       if(node.getNodeId()==nodeId){
         return node;

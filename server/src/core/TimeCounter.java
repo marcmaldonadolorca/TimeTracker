@@ -28,10 +28,10 @@ public class TimeCounter extends Observable {
     TimerTask repeatedTask = new TimerTask() {
       public void run() {
         date = LocalDateTime.now();
-        LOGGER.debug("run() done on " + date.getSecond());
+        //LOGGER.debug("run() done on " + date.getSecond());
         setChanged();
         notifyObservers(date);
-        LOGGER.debug("Notificats");
+        //LOGGER.debug("Notificats");
       }
     };
 
