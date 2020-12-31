@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:codelab_timetracker/page_activities.dart';
+import 'package:codelab_timetracker/search_options.dart';
 import 'package:codelab_timetracker/tree.dart';
 import 'package:flutter/material.dart';
 import 'package:codelab_timetracker/tree.dart' as Tree hide getTree;
@@ -52,17 +53,7 @@ class _PageIntervalsState extends State<PageIntervals> {
                 //   color: Colors.white,
                 //   size: 30.0,
                 // ),
-                IconButton(icon: Icon(Icons.home),
-                    onPressed: () {
-                      while(Navigator.of(context).canPop()) {
-                        print("pop");
-                        Navigator.of(context).pop();
-                      }
-                      /* this works also:
-                      Navigator.popUntil(context, ModalRoute.withName('/'));
-                      */
-                      PageActivites(0);
-                    }),
+
                 IconButton(icon: Icon(Icons.info_outline),
                 onPressed: () {
                   showDialog(
@@ -216,6 +207,23 @@ class _PageIntervalsState extends State<PageIntervals> {
                   });
                 }
                 ),
+                IconButton(icon: Icon(Icons.search),
+                    onPressed: () {
+                      _navigateSearchOptions();
+                      //TODO: llamar a la página de búsqueda
+                    }
+                ),
+                IconButton(icon: Icon(Icons.home),
+                    onPressed: () {
+                      while(Navigator.of(context).canPop()) {
+                        print("pop");
+                        Navigator.of(context).pop();
+                      }
+                      /* this works also:
+                      Navigator.popUntil(context, ModalRoute.withName('/'));
+                      */
+                      PageActivites(0);
+                    }),
               ],
             ),
             body: ListView.separated(
@@ -255,9 +263,9 @@ class _PageIntervalsState extends State<PageIntervals> {
 
   Widget _startOrStopTaskWord(Activity activity){
     if(activity.active){
-      return Text('Stop');
+      return Text('Stop',style: TextStyle(fontSize: 20));
     }else{
-      return Text('Start');
+      return Text('Start', style: TextStyle(fontSize: 20));
     }
   }
 
@@ -347,4 +355,14 @@ class _PageIntervalsState extends State<PageIntervals> {
     super.dispose();
   }
 
+  void _navigateSearchOptions() {
+    _timer.cancel();
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(
+      builder: (context) => SearchOptions(),
+    )).then( (var value) {
+      //_activateTimer();
+      //_refresh();
+    });
+  }
 }

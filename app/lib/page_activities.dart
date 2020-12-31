@@ -88,16 +88,7 @@ class _PageActivitesState extends State<PageActivites> {
             appBar: AppBar(
               title: Text(snapshot.data.root.name ?? 'TimeTracker'),
               actions: <Widget>[
-                IconButton(icon: Icon(Icons.home),
-                    onPressed: () {
-                      while(Navigator.of(context).canPop()) {
-                        Navigator.of(context).pop();
-                      }
-                      /* this works also:
-                      Navigator.popUntil(context, ModalRoute.withName('/'));
-                      */
-                      PageActivites(0);
-                    }),
+
                 IconButton(icon: Icon(Icons.info_outline),
                     onPressed: () {
                   //A LA PAGEACTIVITIES SEMPRE SERÀ PROJECT PK SINÓ ESTARIEM A LA PAGE_INTERVALS!!!!!!!!
@@ -298,6 +289,16 @@ class _PageActivitesState extends State<PageActivites> {
                       //TODO: llamar a la página de búsqueda
                       }
                     ),
+                IconButton(icon: Icon(Icons.home),
+                    onPressed: () {
+                      while(Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop();
+                      }
+                      /* this works also:
+                      Navigator.popUntil(context, ModalRoute.withName('/'));
+                      */
+                      PageActivites(0);
+                    }),
               ],
             ),
             body: ListView.separated(

@@ -113,6 +113,12 @@ void _setTags(Activity activity, Map<String, dynamic> json){
   //}else activity.tags.add("--");
 }
 
+//per emmagatzemar el resultat de TotalTime ja que el futureString no li mola mides variables
+class Tuple {
+  double timeSpent;
+  double cost;
+  Tuple(this.timeSpent, this.cost);
+}
 
 
 class Tree {

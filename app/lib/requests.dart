@@ -66,7 +66,57 @@ Future<void> add(int parentId, String parentName, String newName, String tagsByC
 }
 
 //searchByTag("searchTag" pel server...)
+//Future list d'activities
+Future<Tree> searchByTag(String tag) async {
+  String uri = "$baseUrl/searchTag?$tag";
+  final response = await client.get(uri);
+  if (response.statusCode == 200) {
+    print("statusCode=$response.statusCode");
+    print(response.body);
+    // If the server did return a 200 OK response, then parse the JSON.
+    Map<String, dynamic> decoded = convert.jsonDecode(response.body);
+    return Tree(decoded);
+  } else {
+    print("statusCode=$response.statusCode");
+    throw Exception('Failed to create activity');
+  }
+}
+
+//searchRecent("searchRecent"...)
+//Future list d'activities
+Future<Tree> searchRecentTasks() async {
+  String uri = "$baseUrl/searchRecent?";
+  final response = await client.get(uri);
+  if (response.statusCode == 200) {
+    print("statusCode=$response.statusCode");
+    print(response.body);
+    // If the server did return a 200 OK response, then parse the JSON.
+    Map<String, dynamic> decoded = convert.jsonDecode(response.body);
+    return Tree(decoded);
+  } else {
+    print("statusCode=$response.statusCode");
+    throw Exception('Failed to create activity');
+  }
+}
 
 //totalTime("searchTime" ...)
 
-//searchRecent("searchRecent"...)
+Future<Tuple> searchTotalTime(String activityName, DateTime startDateTime, DateTime finalDateTime, double priceHour ) async {
+  String uri = "$baseUrl/searchTime?$activityName&$startDateTime&$finalDateTime&$priceHour";
+  final response = await client.get(uri);
+  if (response.statusCode == 200) {
+    print("statusCode=$response.statusCode");
+    print(response.body);
+    // If the server did return a 200 OK response, then parse the JSON.
+    String result;
+    result = response.body.toString();//retorna time/price en forma string(fer split després)
+    List<String> aux = result.split('/');
+    Tuple calculs;
+    calculs.cost = double.parse(aux[1]);
+    calculs.timeSpent = double.parse(aux[0]);
+    return calculs;
+  } else {
+    print("statusCode=$response.statusCode");
+    throw Exception('Failed to create activity');
+  }
+}

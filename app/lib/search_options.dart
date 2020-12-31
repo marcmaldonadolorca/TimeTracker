@@ -1,8 +1,12 @@
+
 import 'package:codelab_timetracker/page_activities.dart';
+import 'package:codelab_timetracker/search_recent_tasks.dart';
+import 'package:codelab_timetracker/total_time.dart';
 import 'package:codelab_timetracker/tree.dart' hide getTree;
 // the old getTree()
 import 'package:codelab_timetracker/requests.dart';
 // has the new getTree() that sends an http request to the server
+import 'package:codelab_timetracker/search_by_tag.dart';
 
 import 'package:flutter/material.dart';
 
@@ -27,12 +31,15 @@ class SearchOptions extends StatelessWidget {
         ),
       body: Center(
         child: Column(
-          //mainAxisSize: MainAxisSize.min,
-
           children: <Widget>[
             const SizedBox(height: 80),
             RaisedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => SearchByTag(),),);
+              },
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),
                   side: BorderSide(color: Colors.blue[500])),
@@ -45,7 +52,12 @@ class SearchOptions extends StatelessWidget {
 
             const SizedBox(height: 30),
             RaisedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SearchRecentTask(),),);
+              },
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),
                   side: BorderSide(color: Colors.blue[500])),
@@ -57,7 +69,12 @@ class SearchOptions extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             RaisedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TotalTime(),),);
+              },
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),
                   side: BorderSide(color: Colors.blue[500])),
@@ -71,6 +88,21 @@ class SearchOptions extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  //No cal amb statelessWidget
+  void _navigateByTag(){
 
   }
+
+  void _navigateRecent(){
+
+  }
+
+  void _navigateTotalTime(){
+
+  }
+
+
+
 }

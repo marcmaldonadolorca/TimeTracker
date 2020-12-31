@@ -188,23 +188,38 @@ public class WebServer {
           JSONArray listNodes = new JSONArray();
           for (TrackerNode node: nodesWithTag){
             JSONObject aux = node.toJson(0);
+            System.out.println(node.getNodeName());
             listNodes.put(aux);
+
           }
-          body = listNodes.toString();//Repassar la app que desmonti el JSON correctament!!!!!!
+          //per aprofitar el getTree per rebre el llistat d'activitats resultat les posem com a filles d'un pare auxiliar
+          JSONObject portador = new JSONObject();
+          portador.put("id",1000);portador.put("name", "portador");portador.put("duration",0);
+          portador.put("active",false);portador.put("parentName","Adolf Hitler");
+          JSONArray tagsPortador= new JSONArray();
+          portador.put("tags",tagsPortador);portador.put("class","project");
+          portador.put("activities", listNodes);
+          body = portador.toString();//Repassar la app que desmonti el JSON correctament!!!!!!
           break;
         }
         // TODO:totalTime
         case "searchTime": { //0=ordre, 1=nom node, 2=start, 3=final times, 4=cost
           String name = tokens[1];
           //Per revisar pantalles 18 i 19 quin format passa les dates
-          DateTimeFormatter formater1 = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
-          LocalDateTime start = LocalDateTime.parse(tokens[2],formater1);
-          LocalDateTime end = LocalDateTime.parse(tokens[3],formater1);
+          DateTimeFormatter formater1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+          String startAux0 = tokens[2].replaceFirst("%20"," ");
+          String[] startAux = startAux0.split("\\.");
+          LocalDateTime start = LocalDateTime.parse(startAux[0],formater1);
+          String finalAux0 = tokens[3].replaceFirst("%20"," ");
+          String[] finalAux = finalAux0.split("\\.");
+          LocalDateTime end = LocalDateTime.parse(finalAux[0],formater1);
           Duration time = currentTimeTracker.searchTotalTime(name, start, end);
+          double cost = Double.parseDouble(tokens[4]);
           long durationInHours =  time.toHours()+(time.toMinutes()/60);
           int aux = (int) (durationInHours*100);
           float result = aux/100f;
-          body = Float.toString(result);
+          String responseTimePlusCost = Float.toString(result)+"/"+Double.toString(result*cost);
+          body = responseTimePlusCost;
           break;
         }
         // TODO:recent
@@ -214,9 +229,17 @@ public class WebServer {
           JSONArray listNodes = new JSONArray();
           for (TrackerNode node: recentTasks){
             JSONObject aux = node.toJson(0);
+            System.out.println(node.getNodeName());
             listNodes.put(aux);
           }
-          body = listNodes.toString();//Repassar la app que desmonti el JSON correctament!!!!!!
+          //per aprofitar el getTree per rebre el llistat d'activitats resultat les posem com a filles d'un pare auxiliar
+          JSONObject portador = new JSONObject();
+          portador.put("id",1000);portador.put("name", "portador");portador.put("duration",0);
+          portador.put("active",false);portador.put("parentName","Adolf Hitler");
+          JSONArray tagsPortador= new JSONArray();
+          portador.put("tags",tagsPortador);portador.put("class","project");
+          portador.put("activities", listNodes);
+          body = portador.toString();//Repassar la app que desmonti el JSON correctament!!!!!!
           break;
         }
         default:
