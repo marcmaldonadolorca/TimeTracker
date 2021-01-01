@@ -118,6 +118,14 @@ class Tuple {
   double timeSpent;
   double cost;
   Tuple(this.timeSpent, this.cost);
+
+  void setCost(String cost){
+    this.cost = double.parse(cost);
+  }
+
+  void setTimeSpent(String time){
+    this.timeSpent = double.parse(time);
+  }
 }
 
 

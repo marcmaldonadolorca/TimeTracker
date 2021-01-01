@@ -27,8 +27,9 @@ class _TotalTimeState extends State<TotalTime> {
   DateTime startDateTime;
   DateTime finalDateTime;
   double priceHour;
-  Future<double> totalCost;
-  Future<double> totalTime;
+  Future<Tuple> answer;
+  double totalCost;
+  double totalTime;
   bool wantsPrice = false;
 
 
@@ -105,10 +106,6 @@ class _TotalTimeState extends State<TotalTime> {
                       dateLabelText: 'Start Date',
                       timeLabelText: "Hour",
                       selectableDayPredicate: (date) {
-                        // Disable weekend days to select from the calendar
-                        if (date.weekday == 6 || date.weekday == 7) {
-                          return false;
-                        }
                         return true;
                       },
                       onChanged: (val) => print(val),//this.startDateTime=DateTime.parse(val),
@@ -129,10 +126,6 @@ class _TotalTimeState extends State<TotalTime> {
                       dateLabelText: 'Final Date',
                       timeLabelText: "Hour",
                       selectableDayPredicate: (date) {
-                        // Disable weekend days to select from the calendar
-                        if (date.weekday == 6 || date.weekday == 7) {
-                          return false;
-                        }
                         return true;
                       },
                       onChanged: (val) => print(val), //this.finalDateTime=DateTime.parse(val),
@@ -150,7 +143,7 @@ class _TotalTimeState extends State<TotalTime> {
                             keyboardType: TextInputType.number,
                             controller: myControllerPrice,
                             decoration: InputDecoration(
-                              labelText: 'Price per hour (optional)',
+                              labelText: 'Price per second (optional)',
                               hintText: 'value per hour',
                               labelStyle: TextStyle(
                                   fontSize: 22.0,
@@ -201,7 +194,7 @@ class _TotalTimeState extends State<TotalTime> {
                         style: TextStyle(fontSize: 20)),
                   ),
                 ),
-                SizedBox(height: 80),
+                SizedBox(height: 40),
                 _getResult(),
               ],
             ),
@@ -221,29 +214,35 @@ class _TotalTimeState extends State<TotalTime> {
       this.priceHour = double.parse(myControllerPrice.text);
     }
     if(this.startDateTime != null && this.finalDateTime != null){
-      Tuple result;
-      result = searchTotalTime(this.name,this.startDateTime, this.finalDateTime, this.priceHour) as Tuple;
+      Tuple result = new Tuple(0.0,0.0);
+      //result = searchTotalTime(this.name,this.startDateTime, this.finalDateTime, this.priceHour) as Tuple;
+
+      this.answer = searchTotalTime(this.name,this.startDateTime, this.finalDateTime, this.priceHour);
       setState(() {
-        this.totalTime = result.timeSpent as Future<double>;
-        this.totalCost = result.cost as Future<double>;
+        // // this.totalTime = result.timeSpent as Future<double>;
+        // // this.totalCost = result.cost as Future<double>;
+        // this.totalTime = 1.0 as Future<double>;
+        // this.totalCost = 1.0 as Future<double>;
       });//fa que es torni a cridar build
     }
   }
 
   //Controla què s'ha de mostrar com a resultat: res o showTime
   Widget _getResult() {
-    if (this.totalTime == null) {
+    if (this.answer == null) {
       return Center();
     } else {
-      return FutureBuilder<double>(
-          future: this.totalTime,
+      return FutureBuilder<Tuple>(
+          future: this.answer,
           builder: (context, snapshot){
             if(snapshot.hasData){
+              _setTimeAndCost(snapshot.data);
               return Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                   _showTimeResult(false),
+                    SizedBox(height: 10),
                   _showTimeResult(true),
                 ],
                 ),
@@ -260,16 +259,24 @@ class _TotalTimeState extends State<TotalTime> {
       );
     }
   }
+
+  //Agafa del future les dades i les posa als atributs
+  void _setTimeAndCost(Tuple result){
+    //List<String> aux = str.split('/');
+    this.totalTime = result.timeSpent;
+    this.totalCost = result.cost;
+  }
+
   //Mostra el missatege de resultat
   Widget _showTimeResult(bool cost){
     if(!cost){
       return Column(
         children: [
-          SizedBox(height: 30),
+          //SizedBox(height: 30),
           RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
-              text: "Total amount of time:",
+              text: "Total time: ",
               style: TextStyle(
                   fontSize: 22.0,
                   color: Colors.grey[700],
@@ -278,23 +285,30 @@ class _TotalTimeState extends State<TotalTime> {
               children: <TextSpan>[
                 TextSpan(
                   text: this.totalTime.toString(),
-                  style: TextStyle(fontSize: 18.0,
+                  style: TextStyle(fontSize: 26.0,
                       color: Colors.blue[500],
                       fontWeight: FontWeight.bold),
-                )
+                ),
+                TextSpan(
+                text: " seconds",
+                style: TextStyle(
+                fontSize: 22.0,
+                color: Colors.grey[700],
+                fontWeight: FontWeight.bold
+                ),),
               ],
             ),
           ),
         ],
       );
-    }else{
+    }else if(myControllerPrice.text!=null){//vol resultat del cost
       return Column(
         children: [
-          SizedBox(height: 30),
+          //SizedBox(height: 30),
           RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
-              text: "Total cost:",
+              text: "Total cost: ",
               style: TextStyle(
                   fontSize: 22.0,
                   color: Colors.grey[700],
@@ -303,10 +317,10 @@ class _TotalTimeState extends State<TotalTime> {
               children: <TextSpan>[
                 TextSpan(
                   text: this.totalCost.toString(),
-                  style: TextStyle(fontSize: 18.0,
+                  style: TextStyle(fontSize: 26.0,
                       color: Colors.blue[500],
                       fontWeight: FontWeight.bold),
-                )
+                ),
               ],
             ),
           ),

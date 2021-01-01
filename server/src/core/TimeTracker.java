@@ -160,7 +160,8 @@ public class TimeTracker extends Thread {
       //TODO
       int nodeId=node.getNodeId();//4
 
-      if(this.lastActiveTasks.contains(node)){this.lastActiveTasks.remove(nodeId);}//3.2.4.5->3.2.5
+      if(this.lastActiveTasks.contains(nodeId)){
+        this.lastActiveTasks.remove(Integer.valueOf(nodeId));}//3.2.4.5->3.2.5
       this.lastActiveTasks.addFirst(nodeId);//4.3.2.5
       if (this.lastActiveTasks.size() > MAX_RECENT){
         this.lastActiveTasks.removeLast();
@@ -190,6 +191,17 @@ public class TimeTracker extends Thread {
       Interval activeInterval = ((Task) node).stopInterval();
       clockCounter.deleteObserver(activeInterval);
       LOGGER.debug("Stop observer\n");
+
+      //Per la llista de recentTasks
+      int nodeId=node.getNodeId();//4
+
+      if(this.lastActiveTasks.contains(nodeId)){this.lastActiveTasks.remove(Integer.valueOf(nodeId));}//3.2.4.5->3.2.5
+      this.lastActiveTasks.addFirst(nodeId);//4.3.2.5
+      if (this.lastActiveTasks.size() > MAX_RECENT){
+        this.lastActiveTasks.removeLast();
+      }
+
+
     }
   }
 

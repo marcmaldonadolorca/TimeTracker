@@ -111,9 +111,12 @@ Future<Tuple> searchTotalTime(String activityName, DateTime startDateTime, DateT
     String result;
     result = response.body.toString();//retorna time/price en forma string(fer split després)
     List<String> aux = result.split('/');
-    Tuple calculs;
-    calculs.cost = double.parse(aux[1]);
-    calculs.timeSpent = double.parse(aux[0]);
+    Tuple calculs = new Tuple(0.0,0.0);
+    calculs.setCost(aux[1]);
+    calculs.setTimeSpent(aux[0]);//= double.parse(aux[0]);
+    String s="";
+    s=s+aux[0]+"/"+aux[1];
+    // return s;
     return calculs;
   } else {
     print("statusCode=$response.statusCode");

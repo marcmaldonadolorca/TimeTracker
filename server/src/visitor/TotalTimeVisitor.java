@@ -75,17 +75,17 @@ public class TotalTimeVisitor extends NodeVisitor {
     //casos 1 y 2
     if (startIntervalDate.isBefore(this.startDateTime) || startIntervalDate.isEqual(this.startDateTime)) {
       if (finalIntervalDate.isBefore(this.finalDateTime) || finalIntervalDate.isEqual(this.finalDateTime)) { //1
-        this.totalTime = this.totalTime.plus(Duration.between(finalIntervalDate, this.startDateTime));
+        this.totalTime = this.totalTime.plus(Duration.between(finalIntervalDate, this.startDateTime).abs());
       }
       else {//2
-        this.totalTime = this.totalTime.plus(Duration.between(this.finalDateTime, this.startDateTime));
+        this.totalTime = this.totalTime.plus(Duration.between(this.finalDateTime, this.startDateTime).abs());
       }
     } else { //3
       if (finalIntervalDate.isBefore(this.finalDateTime) || finalIntervalDate.isEqual(this.finalDateTime)) {
-        this.totalTime = this.totalTime.plus(Duration.between(finalIntervalDate, startIntervalDate));
+        this.totalTime = this.totalTime.plus(Duration.between(finalIntervalDate, startIntervalDate).abs());
       }
       else {//4
-        this.totalTime = this.totalTime.plus(Duration.between(this.finalDateTime, startIntervalDate));
+        this.totalTime = this.totalTime.plus(Duration.between(this.finalDateTime, startIntervalDate).abs());
       }
     }
   }

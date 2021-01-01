@@ -195,7 +195,7 @@ public class WebServer {
           //per aprofitar el getTree per rebre el llistat d'activitats resultat les posem com a filles d'un pare auxiliar
           JSONObject portador = new JSONObject();
           portador.put("id",1000);portador.put("name", "portador");portador.put("duration",0);
-          portador.put("active",false);portador.put("parentName","Adolf Hitler");
+          portador.put("active",false);portador.put("parentName","Déu_Nostre_Senyor");
           JSONArray tagsPortador= new JSONArray();
           portador.put("tags",tagsPortador);portador.put("class","project");
           portador.put("activities", listNodes);
@@ -215,10 +215,13 @@ public class WebServer {
           LocalDateTime end = LocalDateTime.parse(finalAux[0],formater1);
           Duration time = currentTimeTracker.searchTotalTime(name, start, end);
           double cost = Double.parseDouble(tokens[4]);
-          long durationInHours =  time.toHours()+(time.toMinutes()/60);
-          int aux = (int) (durationInHours*100);
-          float result = aux/100f;
-          String responseTimePlusCost = Float.toString(result)+"/"+Double.toString(result*cost);
+          //long durationInHours =  time.toHours()+(time.toMinutes()/60);
+          //int aux = (int) (durationInHours*100);
+          //float result = aux/100f;
+          //String responseTimePlusCost = Float.toString(result)+"/"+Double.toString(result*cost);
+
+          double durationInSeconds = time.toHours()*3600 +time.toMinutes()*60 + time.getSeconds();
+          String responseTimePlusCost = Double.toString(durationInSeconds)+"/"+Double.toString(durationInSeconds*cost)+"/";
           body = responseTimePlusCost;
           break;
         }
@@ -235,7 +238,7 @@ public class WebServer {
           //per aprofitar el getTree per rebre el llistat d'activitats resultat les posem com a filles d'un pare auxiliar
           JSONObject portador = new JSONObject();
           portador.put("id",1000);portador.put("name", "portador");portador.put("duration",0);
-          portador.put("active",false);portador.put("parentName","Adolf Hitler");
+          portador.put("active",false);portador.put("parentName","Déu_Nostre_Senyor");
           JSONArray tagsPortador= new JSONArray();
           portador.put("tags",tagsPortador);portador.put("class","project");
           portador.put("activities", listNodes);
