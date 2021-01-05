@@ -301,7 +301,22 @@ class _PageActivitesState extends State<PageActivites> {
                     }),
               ],
             ),
-            body: ListView.separated(
+            // body: ListView.separated(
+            //   // it's like ListView.builder() but better because it includes a separator between items
+            //   padding: const EdgeInsets.all(16.0),
+            //   itemCount: snapshot.data.root.children.length,
+            //   itemBuilder: (BuildContext context, int index) =>
+            //       _buildRow(snapshot.data.root.children[index], index),
+            //   separatorBuilder: (BuildContext context, int index) =>
+            //   const Divider(),
+            // ),
+            body: new Column(
+              children: <Widget>[
+                _getParentName(snapshot.data.root),
+              Expanded(
+              child: SizedBox(
+              height: 800.0,
+              child: new ListView.separated(
               // it's like ListView.builder() but better because it includes a separator between items
               padding: const EdgeInsets.all(16.0),
               itemCount: snapshot.data.root.children.length,
@@ -309,6 +324,10 @@ class _PageActivitesState extends State<PageActivites> {
                   _buildRow(snapshot.data.root.children[index], index),
               separatorBuilder: (BuildContext context, int index) =>
               const Divider(),
+            ),
+              ),
+              ),
+              ],
             ),
 
             floatingActionButton: FloatingActionButton(
@@ -400,6 +419,40 @@ class _PageActivitesState extends State<PageActivites> {
     }
   }
 
+  Widget _getParentName(Activity activity){
+    if (activity.parentName != null) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: new Row (
+          children: <Widget>[
+            Expanded(
+              child: SizedBox(
+                height: 20.0,
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Parent project: ',
+                    style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.grey[700],
+                        fontWeight: FontWeight.bold
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: activity.parentName,
+                        style: TextStyle(color: Colors.blue[500]),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+
+        ),
+      );
+    }else return Center();
+  }
+
   void _startOrStop(Activity activity){
     print("Premuda tecla llarga per: "+activity.id.toString()+" name: "+activity.name);
     if (activity.active) {
@@ -477,7 +530,7 @@ class _PageActivitesState extends State<PageActivites> {
         .push(MaterialPageRoute<void>(
       builder: (context) => CreateActivity(parentId, parentName),
     )).then( (var value) {
-      //_activateTimer();
+      _activateTimer();
       //_refresh();
     });
   }
@@ -488,7 +541,7 @@ class _PageActivitesState extends State<PageActivites> {
         .push(MaterialPageRoute<void>(
       builder: (context) => SearchOptions(),
     )).then( (var value) {
-      //_activateTimer();
+      _activateTimer();
       //_refresh();
     });
   }

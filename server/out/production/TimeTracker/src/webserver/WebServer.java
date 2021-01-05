@@ -168,14 +168,17 @@ public class WebServer {
           TrackerNode parentNode = currentTimeTracker.getTrackerNodeById(id);
           String parentName = parentNode.getNodeName();
           TrackerNode newNode = currentTimeTracker.createNewNode(name, (Project) parentNode, isProject);
-          //trencar l'string dels tags
-          String tags = tokens[3];
-          String[] listTags = tags.split(",");
-          for(String newTag: listTags){
-            if(newTag.charAt(0)=='%'){
-              newTag = newTag.replaceFirst("%20","");//per eliminar possibles espai despres de coma
+
+          //Processar tags del node si nhi ha: indicat per empty_of_tags des de la app quan usr no intro tag
+          if(!tokens[3].equalsIgnoreCase("empty_of_tags")) {
+            String tags = tokens[3];
+            String[] listTags = tags.split(",");
+            for (String newTag : listTags) {
+              if (newTag.charAt(0) == '%') {
+                newTag = newTag.replaceFirst("%20", "");//per eliminar possibles espai despres de coma
+              }
+              newNode.setTag(newTag);
             }
-            newNode.setTag(newTag);
           }
           body = "{}";
           break;
@@ -195,7 +198,7 @@ public class WebServer {
           //per aprofitar el getTree per rebre el llistat d'activitats resultat les posem com a filles d'un pare auxiliar
           JSONObject portador = new JSONObject();
           portador.put("id",1000);portador.put("name", "portador");portador.put("duration",0);
-          portador.put("active",false);portador.put("parentName","Adolf Hitler");
+          portador.put("active",false);portador.put("parentName","Déu_Nostre_Senyor");
           JSONArray tagsPortador= new JSONArray();
           portador.put("tags",tagsPortador);portador.put("class","project");
           portador.put("activities", listNodes);
@@ -215,10 +218,13 @@ public class WebServer {
           LocalDateTime end = LocalDateTime.parse(finalAux[0],formater1);
           Duration time = currentTimeTracker.searchTotalTime(name, start, end);
           double cost = Double.parseDouble(tokens[4]);
-          long durationInHours =  time.toHours()+(time.toMinutes()/60);
-          int aux = (int) (durationInHours*100);
-          float result = aux/100f;
-          String responseTimePlusCost = Float.toString(result)+"/"+Double.toString(result*cost);
+          //long durationInHours =  time.toHours()+(time.toMinutes()/60);
+          //int aux = (int) (durationInHours*100);
+          //float result = aux/100f;
+          //String responseTimePlusCost = Float.toString(result)+"/"+Double.toString(result*cost);
+
+          double durationInSeconds = time.toHours()*3600 +time.toMinutes()*60 + time.getSeconds();
+          String responseTimePlusCost = Double.toString(durationInSeconds)+"/"+Double.toString(durationInSeconds*cost)+"/";
           body = responseTimePlusCost;
           break;
         }
@@ -235,7 +241,7 @@ public class WebServer {
           //per aprofitar el getTree per rebre el llistat d'activitats resultat les posem com a filles d'un pare auxiliar
           JSONObject portador = new JSONObject();
           portador.put("id",1000);portador.put("name", "portador");portador.put("duration",0);
-          portador.put("active",false);portador.put("parentName","Adolf Hitler");
+          portador.put("active",false);portador.put("parentName","Déu_Nostre_Senyor");
           JSONArray tagsPortador= new JSONArray();
           portador.put("tags",tagsPortador);portador.put("class","project");
           portador.put("activities", listNodes);

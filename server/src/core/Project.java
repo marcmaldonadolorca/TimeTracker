@@ -228,7 +228,8 @@ public class Project extends TrackerNode {
     json.put("name", this.nodeName);
     json.put("id",this.nodeId);
     json.put("class","project");
-    long durationInSeconds = this.timeSpent.toHours()*3600+this.timeSpent.toMinutes()*60+this.timeSpent.getSeconds();
+    //long durationInSeconds = this.timeSpent.toHours()*3600+this.timeSpent.toMinutes()*60+this.timeSpent.getSeconds();
+    long durationInSeconds = this.timeSpent.getSeconds();
     json.put("duration",durationInSeconds);
     if(this.startDateTime!=null){
       json.put("initialDate",this.startDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -238,20 +239,20 @@ public class Project extends TrackerNode {
     }else { json.put("finalDate", JSONObject.NULL);}
 
 
-//    Collections.sort(childNodes, new Comparator<TrackerNode>() {
-//      @Override
-//      public int compare(TrackerNode o1, TrackerNode o2) {
-//        if(o1.getFinalDateTime().isAfter(o2.getFinalDateTime())) {
-//          return 1;
-//        }
-//        else if(o1.getFinalDateTime().isBefore(o2.getFinalDateTime())) {
-//          return -1;
-//        }
-//        else{
-//          return 0;
-//        }
-//      }
-//    });
+    Collections.sort(childNodes, new Comparator<TrackerNode>() {
+      @Override
+      public int compare(TrackerNode o1, TrackerNode o2) {
+        if(o1.getTimeSpent().compareTo(o2.getTimeSpent()) <0) {
+          return 1;
+        }
+        else if(o1.getTimeSpent().compareTo(o2.getTimeSpent()) >0) {
+          return -1;
+        }
+        else{
+          return 0;
+        }
+      }
+    });
 
     JSONArray tags= new JSONArray();
     for(String tag: this.tagList){
@@ -287,12 +288,6 @@ public class Project extends TrackerNode {
     return running;
   }
 
-  //Per la sobre carrega de la comparació per ordenar
-  //finalDateTime.isBefore(this.finalDateTime)
-  //finalDateTime.isAfter(this.finalDateTime)
-  public boolean compare(TrackerNode first, TrackerNode second){
-    return first.getFinalDateTime().isAfter(second.getFinalDateTime());
-  }
 
 
 }

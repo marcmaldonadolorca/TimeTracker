@@ -50,6 +50,7 @@ class _SearchByTagState extends State<SearchByTag> {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
       child: Scaffold(
+          resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text('Search by Tag'),
           actions: <Widget>[
@@ -97,7 +98,11 @@ class _SearchByTagState extends State<SearchByTag> {
                       style: TextStyle(fontSize: 20)),
                 ),
               ),
-              SizedBox(height: 80),
+              SizedBox(height: 20),
+              Text('Activities found: ',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              //SizedBox(height: 80),
               _getResultsList(),
 
             ],
@@ -134,18 +139,21 @@ class _SearchByTagState extends State<SearchByTag> {
         future: futureTree,
         builder: (context, snapshot){
           if(snapshot.hasData){
-            return Center(
-              // child: ListView.separated(
-              //   // it's like ListView.builder() but better because it includes a separator between items
-              //   padding: const EdgeInsets.all(16.0),
-              //   itemCount: snapshot.data.root.children.length,
-              //   itemBuilder: (BuildContext context, int index) =>
-              //       _buildRow(snapshot.data.root.children[index], index),
-              //   separatorBuilder: (BuildContext context, int index) =>
-              //   const Divider(),
-              child: _getNamesActivities(snapshot.data.root),
-              //),
-            );
+
+            return new Row(
+                children: <Widget>[
+                Expanded(
+                child: SizedBox(
+                height: 400.0,
+                child: new ListView.separated(
+                // it's like ListView.builder() but better because it includes a separator between items
+                padding: const EdgeInsets.all(16.0),
+                itemCount: snapshot.data.root.children.length,
+                itemBuilder: (BuildContext context, int index) =>
+                    _buildRow(snapshot.data.root.children[index], index),
+                separatorBuilder: (BuildContext context, int index) =>
+                const Divider(),
+            ),),),],);
          }else{
             return Center(child: Text(
               'No results found',

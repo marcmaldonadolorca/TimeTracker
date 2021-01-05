@@ -226,14 +226,61 @@ class _PageIntervalsState extends State<PageIntervals> {
                     }),
               ],
             ),
-            body: ListView.separated(
-              // it's like ListView.builder() but better because it includes a separator between items
-              padding: const EdgeInsets.all(16.0),
-              itemCount: numChildren,
-              itemBuilder: (BuildContext context, int index) =>
-                  _buildRow(snapshot.data.root.children[index], index),
-              separatorBuilder: (BuildContext context, int index) =>
-              const Divider(),
+            // body: ListView.separated(
+            //   // it's like ListView.builder() but better because it includes a separator between items
+            //   padding: const EdgeInsets.all(16.0),
+            //   itemCount: numChildren,
+            //   itemBuilder: (BuildContext context, int index) =>
+            //       _buildRow(snapshot.data.root.children[index], index),
+            //   separatorBuilder: (BuildContext context, int index) =>
+            //   const Divider(),
+            // ),
+            body: new Column(
+              children: <Widget>[
+            Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: new Row (
+              children: <Widget>[
+                Expanded(
+                  child: SizedBox(
+                    height: 20.0,
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Parent project: ',
+                        style: TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.bold
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: snapshot.data.root.parentName,
+                            style: TextStyle(color: Colors.blue[500]),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+
+            ),
+          ),
+                Expanded(
+                  child: SizedBox(
+                    height: 800.0,
+                    child: new ListView.separated(
+                        // it's like ListView.builder() but better because it includes a separator between items
+                        padding: const EdgeInsets.all(16.0),
+                        itemCount: numChildren,
+                        itemBuilder: (BuildContext context, int index) =>
+                            _buildRow(snapshot.data.root.children[index], index),
+                        separatorBuilder: (BuildContext context, int index) =>
+                        const Divider(),
+                      ),
+                  ),
+                ),
+              ],
             ),
 
             floatingActionButton: FloatingActionButton.extended(

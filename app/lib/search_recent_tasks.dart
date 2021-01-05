@@ -89,7 +89,10 @@ class _SearchRecentTaskState extends State<SearchRecentTask> {
                         style: TextStyle(fontSize: 20)),
                   ),
                 ),
-                SizedBox(height: 80),
+                SizedBox(height: 20),
+                Text('Activities found: ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 _getResultsList(),
 
               ],
@@ -126,7 +129,7 @@ class _SearchRecentTaskState extends State<SearchRecentTask> {
           future: futureTree,
           builder: (context, snapshot){
             if(snapshot.hasData){
-              return Center(
+              //return Center(
                 //Peta al fer el dibuix diu que falta especificar com dibuixar...
                 // child: ListView.separated(
                 //   // it's like ListView.builder() but better because it includes a separator between items
@@ -136,9 +139,23 @@ class _SearchRecentTaskState extends State<SearchRecentTask> {
                 //       _buildRow(snapshot.data.root.children[index], index),
                 //   separatorBuilder: (BuildContext context, int index) =>
                 //   const Divider(),
-                child: _getNamesActivities(snapshot.data.root),
+                //child: _getNamesActivities(snapshot.data.root),
                 //),
-              );
+              //);
+              return new Row(
+                children: <Widget>[
+                  Expanded(
+                    child: SizedBox(
+                      height: 500.0,
+                      child: new ListView.separated(
+                        // it's like ListView.builder() but better because it includes a separator between items
+                        padding: const EdgeInsets.all(16.0),
+                        itemCount: snapshot.data.root.children.length,
+                        itemBuilder: (BuildContext context, int index) =>
+                            _buildRow(snapshot.data.root.children[index], index),
+                        separatorBuilder: (BuildContext context, int index) =>
+                        const Divider(),
+                      ),),),],);
             }else{
               return Center(child: Text(
                 'No results found',

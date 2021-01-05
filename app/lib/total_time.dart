@@ -34,7 +34,7 @@ class _TotalTimeState extends State<TotalTime> {
 
 
   final myControllerName = new TextEditingController();//per guardar l' inpus name
-  final myControllerPrice = new TextEditingController();//per guardar l' input preu hora
+  final myControllerPrice = new TextEditingController(text: "0");//per guardar l' input preu hora
   var startTimeController = new TextEditingController();
   var finalTimeController = new TextEditingController();
 
@@ -301,7 +301,7 @@ class _TotalTimeState extends State<TotalTime> {
           ),
         ],
       );
-    }else if(myControllerPrice.text!=null){//vol resultat del cost
+    }else if(this.wantsPrice == true){//vol resultat del cost
       return Column(
         children: [
           //SizedBox(height: 30),
@@ -326,7 +326,7 @@ class _TotalTimeState extends State<TotalTime> {
           ),
         ],
       );
-    }
+    }else return Column();
 
   }
 

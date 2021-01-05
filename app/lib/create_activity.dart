@@ -88,7 +88,7 @@ class _CreateActivityState extends State<CreateActivity> {
                   controller: myControllerTags,
                   decoration: InputDecoration(
                     labelText: 'Tags (optional)',
-                    hintText: 'Enter tag words separated by commas',
+                    hintText: 'Tags words separated by commas',
                     labelStyle: TextStyle(
                       fontSize: 22.0,
                       color: Colors.grey[700],
@@ -135,7 +135,9 @@ class _CreateActivityState extends State<CreateActivity> {
                       //server case 'add'
                       setState(() {
                         this.newName = myControllerName.text;
-                        this.tagsByComas = myControllerTags.text;
+                        //per la funció add server tenir algun valor al URL indicador de empty
+                        if(myControllerTags.text != ""){ this.tagsByComas = myControllerTags.text; }
+                        else {this.tagsByComas = "empty_of_tags";}
                         this.parentName = widget.parentName;
                         this.parentId = widget.parentId;
                       });

@@ -168,14 +168,17 @@ public class WebServer {
           TrackerNode parentNode = currentTimeTracker.getTrackerNodeById(id);
           String parentName = parentNode.getNodeName();
           TrackerNode newNode = currentTimeTracker.createNewNode(name, (Project) parentNode, isProject);
-          //trencar l'string dels tags
-          String tags = tokens[3];
-          String[] listTags = tags.split(",");
-          for(String newTag: listTags){
-            if(newTag.charAt(0)=='%'){
-              newTag = newTag.replaceFirst("%20","");//per eliminar possibles espai despres de coma
+
+          //Processar tags del node si nhi ha: indicat per empty_of_tags des de la app quan usr no intro tag
+          if(!tokens[3].equalsIgnoreCase("empty_of_tags")) {
+            String tags = tokens[3];
+            String[] listTags = tags.split(",");
+            for (String newTag : listTags) {
+              if (newTag.charAt(0) == '%') {
+                newTag = newTag.replaceFirst("%20", "");//per eliminar possibles espai despres de coma
+              }
+              newNode.setTag(newTag);
             }
-            newNode.setTag(newTag);
           }
           body = "{}";
           break;
